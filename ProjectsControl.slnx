@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ProjectsControl.Api/ProjectsControl.Api.csproj" />
+  <Project Path="ProjectsControl.Application/ProjectsControl.Application.csproj" />
+  <Project Path="ProjectsControl.Entities/ProjectsControl.Entities.csproj" />
+  <Project Path="ProjectsControl.Infrastructure/ProjectsControl.Infrastructure.csproj" />
+</Solution>

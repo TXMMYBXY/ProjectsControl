@@ -1,0 +1,23 @@
+using Microsoft.Extensions.DependencyInjection;
+using ProjectsControl.Application.Repository;
+using ProjectsControl.Application.Services.Employee;
+using ProjectsControl.Application.Services.Project;
+using ProjectsControl.Infrastructure.Repository;
+using ProjectsControl.Infrastructure.Services;
+
+namespace ProjectsControl.Infrastructure;
+
+public static class ServiceRegistration
+{
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    {
+        services.AddScoped<IProjectService, ProjectService>();
+        services.AddScoped<IEmployeeService, EmployeeService>();
+        
+        services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+        services.AddScoped<IProjectRepository, ProjectRepository>();
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        
+        return services;
+    }
+}
