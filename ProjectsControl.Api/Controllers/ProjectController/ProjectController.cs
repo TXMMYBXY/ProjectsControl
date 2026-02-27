@@ -1,7 +1,9 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ProjectsControl.Api.Controllers.ProjectController.ViewModels;
+using ProjectsControl.Application.Services.Employee.Dtos;
 using ProjectsControl.Application.Services.Project;
+using ProjectsControl.Application.Services.Project.Dtos;
 
 namespace ProjectsControl.Api.Controllers.ProjectController;
 
@@ -18,34 +20,50 @@ public class ProjectController : ControllerBase
         _projectService = projectService;
     }
 
-    [HttpGet]
+    [HttpGet("all")]
     public async Task<ActionResult<List<GetProjectViewModel>>> GetAllProjects()
     {
-        throw  new NotImplementedException();
+        var projectListDto = await _projectService.GetAllProjectsAsync();
+        var projectListViewModel = _mapper.Map<List<GetProjectViewModel>>(projectListDto);
+        
+        return Ok(projectListViewModel);
     }
     
     [HttpGet("{projectId:int}")]
     public async Task<ActionResult<GetProjectViewModel>> GetProjectById(int projectId)
     {
-        throw  new NotImplementedException();
+        var projectDto = await _projectService.GetProjectByIdAsync(projectId);
+        var projectViewModel = _mapper.Map<GetProjectViewModel>(projectDto);
+        
+        return Ok(projectViewModel);
     }
 
     [HttpPost]
     public async Task<ActionResult> CreateProject([FromBody] CreateProjectViewModel createProjectViewModel)
     {
-        throw  new NotImplementedException();
+        var createProjectDto = _mapper.Map<CreateProjectDto>(createProjectViewModel);
+        var projectDto = await _projectService.CreateProjectAsync(createProjectDto);
+        var projectViewModel = _mapper.Map<CreateProjectViewModel>(projectDto);
+        
+        return Created(nameof(projectViewModel), projectViewModel);
     }
 
     [HttpPut("{projectId:int}")]
     public async Task<ActionResult> UpdateProjectById(int projectId, 
         [FromBody] UpdateProjectViewModel updateProjectViewModel)
     {
-        throw  new NotImplementedException();
+        var updateProjectDto = _mapper.Map<UpdateProjectDto>(updateProjectViewModel);
+        
+        await _projectService.UpdateProjectAsync(projectId, updateProjectDto);
+        
+        return Ok();
     }
 
     [HttpDelete("{projectId:int}")]
     public async Task<ActionResult> DeleteProjectById(int projectId)
     {
-        throw  new NotImplementedException();
+        await  _projectService.DeleteProjectAsync(projectId);
+        
+        return Ok();
     }
 }

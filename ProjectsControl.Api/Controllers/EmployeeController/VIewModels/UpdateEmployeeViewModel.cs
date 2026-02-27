@@ -4,33 +4,31 @@ using ProjectsControl.Entity.Models;
 
 namespace ProjectsControl.Api.Controllers.EmployeeController.VIewModels;
 
-public class CreateEmployeeViewModel
+public class UpdateEmployeeViewModel
 {
-    [Required]
     [MaxLength(63)]
     [JsonPropertyName("firstName")]
-    public string FirstName { get; set; }
+    public string? FirstName { get; set; }
     
-    [Required]
     [MaxLength(63)]
     [JsonPropertyName("lastName")]
-    public string LastName { get; set; }
+    public string? LastName { get; set; }
     
     [MaxLength(63)]
     [JsonPropertyName("patronymic")]
-    public string Patronymic { get; set; }
+    public string? Patronymic { get; set; }
     
     [MaxLength(63)]
     [JsonPropertyName("email")]
-    public string Email { get; set; }
+    public string? Email { get; set; }
     
     [MaxLength(31)]
     [JsonPropertyName("phoneNumber")]
-    public string PhoneNumber { get; set; }
+    public string? PhoneNumber { get; set; }
     
-    [JsonPropertyName("projectsIds")]
-    public int[] ProjectsIds { get; set; }
-
-    [JsonPropertyName("managedProjectsIds")]
-    public int[] ManagedProjectsIds { get; set; }
+    [JsonPropertyName("projects")]
+    public virtual List<Project>? Projects { get; set; }
+    
+    [JsonPropertyName("managedProjects")]
+    public virtual List<Project>? ManagedProjects { get; set; }
 }

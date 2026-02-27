@@ -6,7 +6,7 @@ public interface IEmployeeService
 {
     Task<List<GetEmployeeDto>> GetAllEmployeesAsync();
     Task<GetEmployeeDto> GetEmployeeAsync(int employeeId);
-    Task CreateEmployeeAsync(CreateEmployeeDto createEmployeeDto);
+    Task<CreateEmployeeDto> CreateEmployeeAsync(CreateEmployeeDto createEmployeeDto);
     Task UpdateEmployeeAsync(int employeeId, UpdateEmployeeDto updateEmployeeDto);
     Task DeleteEmployeeAsync(int employeeId);
 }

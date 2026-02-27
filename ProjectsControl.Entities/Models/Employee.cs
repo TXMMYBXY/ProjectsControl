@@ -6,25 +6,20 @@ namespace ProjectsControl.Entity.Models;
 public class Employee : EntityBase
 {
     [Required]
-    [Column(nameof(FirstName))]
-    [MaxLength(63)]
+    [Column(nameof(FirstName), TypeName =  "nvarchar(63)")]
     public string FirstName { get; set; }
     
     [Required]
-    [Column(nameof(LastName))]
-    [MaxLength(63)]
+    [Column(nameof(LastName), TypeName =  "nvarchar(63)")]
     public string LastName { get; set; }
     
-    [Column(nameof(Patronymic))]
-    [MaxLength(63)]
+    [Column(nameof(Patronymic), TypeName =  "nvarchar(63)")]
     public string Patronymic { get; set; }
     
-    [Column(nameof(Email))]
-    [MaxLength(63)]
+    [Column(nameof(Email), TypeName =  "nvarchar(63)")]
     public string Email { get; set; }
     
-    [Column(nameof(PhoneNumber))]
-    [MaxLength(31)]
+    [Column(nameof(PhoneNumber), TypeName =  "nvarchar(31)")]
     public string PhoneNumber { get; set; }
 
     public virtual List<Project> Projects { get; set; } = new List<Project>();

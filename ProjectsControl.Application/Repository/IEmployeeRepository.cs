@@ -4,5 +4,4 @@ namespace ProjectsControl.Application.Repository;
 
 public interface IEmployeeRepository : IBaseRepository<Employee>
 {
-    
 }

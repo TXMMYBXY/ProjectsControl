@@ -6,17 +6,17 @@ namespace ProjectsControl.Entity.Models;
 public class Project : EntityBase
 {
     [Required]
-    [Column(nameof(Title))]
+    [Column(nameof(Title), TypeName =  "nvarchar(63)")]
     [MaxLength(63)]
     public string Title { get; set; }
     
     [Required]
-    [Column(nameof(CustomerCompany))]
+    [Column(nameof(CustomerCompany), TypeName =  "nvarchar(63)")]
     [MaxLength(63)]
     public string CustomerCompany { get; set; }
     
     [Required]
-    [Column(nameof(PerformingCompany))]
+    [Column(nameof(PerformingCompany), TypeName =  "nvarchar(63)")]
     [MaxLength(63)]
     public string PerformingCompany { get; set; }
     
@@ -29,11 +29,11 @@ public class Project : EntityBase
     public Employee ProjectManager { get; set; }
     
     [Required]
-    [Column(nameof(StartDate))]
+    [Column(nameof(StartDate), TypeName =  "date")]
     public DateTime StartDate { get; set; }
     
     [Required]
-    [Column(nameof(FinishDate))]
+    [Column(nameof(FinishDate), TypeName =  "date")]
     public DateTime FinishDate { get; set; }
     
     [Required]

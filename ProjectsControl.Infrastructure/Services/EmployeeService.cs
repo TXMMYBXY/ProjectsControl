@@ -1,32 +1,78 @@
+using AutoMapper;
+using ProjectsControl.Application.Repository;
 using ProjectsControl.Application.Services.Employee;
 using ProjectsControl.Application.Services.Employee.Dtos;
+using ProjectsControl.Entity.Data;
+using ProjectsControl.Entity.Models;
 
 namespace ProjectsControl.Infrastructure.Services;
 
 public class EmployeeService : IEmployeeService
 {
+    private readonly IMapper _mapper;
+    private readonly IEmployeeRepository  _employeeRepository;
+    private readonly IProjectRepository _projectRepository;
+
+    public EmployeeService(
+        IMapper mapper, 
+        IEmployeeRepository employeeRepository,
+        IProjectRepository projectRepository)
+    {
+        _mapper = mapper;
+        _employeeRepository = employeeRepository;
+        _projectRepository = projectRepository;
+    }
+    
     public async Task<List<GetEmployeeDto>> GetAllEmployeesAsync()
     {
-        throw new NotImplementedException();
+        var employeeList = await _employeeRepository.GetAllAsync();
+        var employeeListDto =  _mapper.Map<List<GetEmployeeDto>>(employeeList);
+        
+        return employeeListDto;
     }
 
     public async Task<GetEmployeeDto> GetEmployeeAsync(int employeeId)
     {
-        throw new NotImplementedException();
+        var employee = await _employeeRepository.GetByIdAsync(employeeId);
+        var employeeDto = _mapper.Map<GetEmployeeDto>(employee);
+        
+        return employeeDto;
     }
 
-    public async Task CreateEmployeeAsync(CreateEmployeeDto createEmployeeDto)
+    public async Task<CreateEmployeeDto> CreateEmployeeAsync(CreateEmployeeDto createEmployeeDto)
     {
-        throw new NotImplementedException();
+        var employee = _mapper.Map<Employee>(createEmployeeDto);
+
+        if (createEmployeeDto.ProjectsIds.Length != 0)
+        {
+            var projects = await _projectRepository.GetProjectsByIdAsync(createEmployeeDto.ProjectsIds);
+        
+            employee.Projects = projects.ToList();
+        }
+        
+        await _employeeRepository.AddAsync(employee);
+        await _employeeRepository.SaveChangesAsync();
+
+        return createEmployeeDto;
     }
 
     public async Task UpdateEmployeeAsync(int employeeId, UpdateEmployeeDto updateEmployeeDto)
     {
-        throw new NotImplementedException();
+        var employee = await _employeeRepository.GetByIdAsync(employeeId);
+        
+        _mapper.Map(updateEmployeeDto, employee);
+        
+        _employeeRepository.UpdateFields(employee);
+        
+        await _employeeRepository.SaveChangesAsync();
     }
 
     public async Task DeleteEmployeeAsync(int employeeId)
     {
-        throw new NotImplementedException();
+        var employee = await _employeeRepository.GetByIdAsync(employeeId);
+
+        if (employee != null) _employeeRepository.Delete(employee);
+
+        await _employeeRepository.SaveChangesAsync();
     }
 }
