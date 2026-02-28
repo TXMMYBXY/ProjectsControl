@@ -30,7 +30,4 @@ public class CreateEmployeeViewModel
     
     [JsonPropertyName("projectsIds")]
     public int[] ProjectsIds { get; set; }
-
-    [JsonPropertyName("managedProjectsIds")]
-    public int[] ManagedProjectsIds { get; set; }
 }

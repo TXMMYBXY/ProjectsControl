@@ -2,7 +2,6 @@ using AutoMapper;
 using ProjectsControl.Application.Repository;
 using ProjectsControl.Application.Services.Employee;
 using ProjectsControl.Application.Services.Employee.Dtos;
-using ProjectsControl.Entity.Data;
 using ProjectsControl.Entity.Models;
 
 namespace ProjectsControl.Infrastructure.Services;
@@ -25,7 +24,7 @@ public class EmployeeService : IEmployeeService
     
     public async Task<List<GetEmployeeDto>> GetAllEmployeesAsync()
     {
-        var employeeList = await _employeeRepository.GetAllAsync();
+        var employeeList = await _employeeRepository.GetAllEmployeesAsync();
         var employeeListDto =  _mapper.Map<List<GetEmployeeDto>>(employeeList);
         
         return employeeListDto;
@@ -46,7 +45,7 @@ public class EmployeeService : IEmployeeService
         if (createEmployeeDto.ProjectsIds.Length != 0)
         {
             var projects = await _projectRepository.GetProjectsByIdAsync(createEmployeeDto.ProjectsIds);
-        
+            
             employee.Projects = projects.ToList();
         }
         

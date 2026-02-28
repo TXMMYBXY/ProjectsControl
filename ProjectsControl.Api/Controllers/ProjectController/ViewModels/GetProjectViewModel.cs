@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using ProjectsControl.Application.Services.Project.Dtos;
 using ProjectsControl.Entity.Models;
 
 namespace ProjectsControl.Api.Controllers.ProjectController.ViewModels;
@@ -18,10 +19,10 @@ public class GetProjectViewModel
     public string PerformingCompany { get; set; }
     
     [JsonPropertyName("employees")]
-    public List<Employee> Employees { get; set; }
+    public List<EmployeeInProjectDto> Employees { get; set; }
     
     [JsonPropertyName("projectManager")]
-    public Employee ProjectManager { get; set; }
+    public EmployeeInProjectDto ProjectManager { get; set; }
     
     [JsonPropertyName("startDate")]
     public DateTime StartDate { get; set; }

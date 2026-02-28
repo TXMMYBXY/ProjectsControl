@@ -29,10 +29,10 @@ public class EmployeeController : ControllerBase
     }
     
     [HttpGet("{employeeId:int}")]
-    public async Task<ActionResult<List<GetEmployeeViewModel>>> GetEmployeeById([FromRoute] int employeeId)
+    public async Task<ActionResult<GetEmployeeViewModel>> GetEmployeeById([FromRoute] int employeeId)
     {
         var employeeDto = await _employeeService.GetEmployeeAsync(employeeId);
-        var employeeViewModel = _mapper.Map<List<GetEmployeeViewModel>>(employeeDto);
+        var employeeViewModel = _mapper.Map<GetEmployeeViewModel>(employeeDto);
         
         return Ok(employeeViewModel);
     }

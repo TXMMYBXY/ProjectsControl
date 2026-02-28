@@ -13,9 +13,13 @@ public class EmployeeRepository : BaseRepository<Employee>, IEmployeeRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Employee> GetEmployeeByEmailAsync(string email)
+    public async Task<IReadOnlyList<Employee>> GetAllEmployeesAsync()
     {
-        return await _dbContext.Employees.FirstOrDefaultAsync(e => e.Email == email);
+        return await _dbContext.Employees.Include(e => e.Projects).ToListAsync();
     }
 
+    public async Task<IReadOnlyList<Employee>> GetEmployeesByIdsAsync(int[] employeesIds)
+    {
+        return await _dbContext.Employees.Where(e => employeesIds.Contains(e.Id)).ToListAsync();
+    }
 }

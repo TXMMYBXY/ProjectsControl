@@ -8,4 +8,5 @@ public class GetEmployeeDto
     public string Patronymic { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
+    public List<ProjectByEmployeeDto> Projects { get; set; }
 }

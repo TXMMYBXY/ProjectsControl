@@ -9,11 +9,11 @@ public class EmployeeMappingProfile : Profile
     {
         //Profiles for GET
         CreateMap<GetEmployeeDto, Entity.Models.Employee>().ReverseMap();
+        CreateMap<ProjectByEmployeeDto, Entity.Models.Project>().ReverseMap();
         
         //Profiles for POST
         CreateMap<Entity.Models.Employee, CreateEmployeeDto>()
-            .ForMember(dest => dest.ProjectsIds, opt => opt.Ignore())
-            .ForMember(dest => dest.ManagedProjectsIds, opt => opt.Ignore());
+            .ForMember(dest => dest.ProjectsIds, opt => opt.Ignore());
 
         CreateMap<CreateEmployeeDto, Entity.Models.Employee>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -22,6 +22,13 @@ public class EmployeeMappingProfile : Profile
         
             
         //Profiles for PATCH
-        CreateMap<UpdateEmployeeDto, Entity.Models.Employee>().ReverseMap();
+        CreateMap<UpdateEmployeeDto, Entity.Models.Employee>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Projects, opt => opt.Ignore())
+            .ForMember(dest => dest.ManagedProjects, opt => opt.Ignore());
+
+        CreateMap<Entity.Models.Employee, UpdateEmployeeDto>()
+            .ForMember(dest => dest.ProjectsIds, opt => opt.Ignore())
+            .ForMember(dest => dest.ManagedProjectsIds, opt => opt.Ignore());
     }
 }

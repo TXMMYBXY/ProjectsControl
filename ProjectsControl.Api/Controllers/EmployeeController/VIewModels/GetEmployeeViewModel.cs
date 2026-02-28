@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using ProjectsControl.Application.Services.Employee.Dtos;
 
 namespace ProjectsControl.Api.Controllers.EmployeeController.VIewModels;
 
@@ -21,4 +22,7 @@ public class GetEmployeeViewModel
     
     [JsonPropertyName("phoneNumber")]
     public string PhoneNumber { get; set; }
+    
+    [JsonPropertyName("projects")]
+    public List<ProjectByEmployeeDto> Projects { get; set; }
 }

@@ -1,6 +1,5 @@
 using AutoMapper;
 using ProjectsControl.Application.Repository;
-using ProjectsControl.Application.Services.Employee.Dtos;
 using ProjectsControl.Application.Services.Project;
 using ProjectsControl.Application.Services.Project.Dtos;
 using ProjectsControl.Entity.Models;
@@ -11,17 +10,22 @@ public class ProjectService : IProjectService
 {
     private readonly IMapper  _mapper;
     private readonly IProjectRepository _projectRepository;
+    private readonly IEmployeeRepository _employeeRepository;
 
-    public ProjectService(IMapper mapper, IProjectRepository projectRepository)
+    public ProjectService(
+        IMapper mapper, 
+        IProjectRepository projectRepository,
+        IEmployeeRepository employeeRepository)
     {
         _mapper = mapper;
         _projectRepository = projectRepository;
+        _employeeRepository = employeeRepository;
     }
     
     public async Task<List<GetProjectDto>> GetAllProjectsAsync()
     {
-        var projectList = await _projectRepository.GetAllAsync();
-        var projectListDto = _mapper.Map<List<GetProjectDto>>(projectList);
+        var projectsList = await _projectRepository.GetAllProjectsAsync();
+        var projectListDto = _mapper.Map<List<GetProjectDto>>(projectsList);
         
         return projectListDto;
     }
@@ -37,6 +41,19 @@ public class ProjectService : IProjectService
     public async Task<CreateProjectDto> CreateProjectAsync(CreateProjectDto createProjectDto)
     {
         var project = _mapper.Map<Project>(createProjectDto);
+        var employees = await _employeeRepository.GetEmployeesByIdsAsync(createProjectDto.EmployeesIds);
+        var projectManager = await _employeeRepository.GetByIdAsync(createProjectDto.ProjectManagerId);
+
+        if (projectManager != null && !createProjectDto.EmployeesIds.Contains(projectManager.Id))
+        {
+            project.Employees.Add(projectManager);
+            
+            createProjectDto.EmployeesIds = createProjectDto.EmployeesIds
+                .Append(projectManager.Id)
+                .ToArray();
+        }
+        
+        project.Employees.AddRange(employees.ToList());
         
         await _projectRepository.AddAsync(project);
         await _projectRepository.SaveChangesAsync();
