@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using ProjectsControl.Entity.Models;
 
 namespace ProjectsControl.Api.Controllers.EmployeeController.VIewModels;
 
@@ -26,9 +25,6 @@ public class UpdateEmployeeViewModel
     [JsonPropertyName("phoneNumber")]
     public string? PhoneNumber { get; set; }
     
-    [JsonPropertyName("projects")]
-    public virtual List<Project>? Projects { get; set; }
-    
-    [JsonPropertyName("managedProjects")]
-    public virtual List<Project>? ManagedProjects { get; set; }
+    [JsonPropertyName("projectsIds")]
+    public int[]? ProjectsIds { get; set; }
 }

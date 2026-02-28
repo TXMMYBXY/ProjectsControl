@@ -20,11 +20,10 @@ public class ProjectMappingProfile : Profile
             .ForMember(dest => dest.Employees, opt => opt.Ignore());
         
         //Profiles for PATCH
-        CreateMap<UpdateProjectDto, Entity.Models.Project>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.Employees, opt => opt.Ignore());
-        
-        CreateMap<Entity.Models.Project, UpdateProjectDto>()
-            .ForMember(dest => dest.EmployeesIds, opt => opt.Ignore());
+        CreateMap<UpdateProjectInfoDto, Entity.Models.Project>()
+            .ForAllMembers(opts =>
+                opts.Condition((src, dest, srcMember) => srcMember != null));
+
+        CreateMap<Entity.Models.Project, UpdateProjectInfoDto>();
     }
 }

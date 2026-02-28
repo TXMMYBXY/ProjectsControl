@@ -1,5 +1,6 @@
 using AutoMapper;
 using ProjectsControl.Application.Repository;
+using ProjectsControl.Application.Services.Employee.Dtos;
 using ProjectsControl.Application.Services.Project;
 using ProjectsControl.Application.Services.Project.Dtos;
 using ProjectsControl.Entity.Models;
@@ -33,6 +34,9 @@ public class ProjectService : IProjectService
     public async Task<GetProjectDto> GetProjectByIdAsync(int projectId)
     {
         var project = await _projectRepository.GetByIdAsync(projectId);
+        
+        GeneralService.CheckForNull(project, "Project not found");
+        
         var projectDto = _mapper.Map<GetProjectDto>(project);
         
         return projectDto;
@@ -61,13 +65,11 @@ public class ProjectService : IProjectService
         return createProjectDto;
     }
 
-    public async Task UpdateProjectAsync(int projectId, UpdateProjectDto updateProjectDto)
+    public async Task UpdateProjectInfoAsync(int projectId, UpdateProjectInfoDto updateProjectInfoDto)
     {
         var employee = await _projectRepository.GetByIdAsync(projectId);
         
-        _mapper.Map(updateProjectDto, employee);
-        
-        _projectRepository.UpdateFields(employee);
+        _mapper.Map(updateProjectInfoDto, employee);
         
         await _projectRepository.SaveChangesAsync();
     }
@@ -76,8 +78,30 @@ public class ProjectService : IProjectService
     {
         var project = await _projectRepository.GetByIdAsync(projectId);
         
+        GeneralService.CheckForNull(project, "Project not found");
+        
         _projectRepository.Delete(project);
         
         await _projectRepository.SaveChangesAsync();
     }
-}
+
+    public async Task ChangeEmployeesOnProjectAsync(int projectId, ChangeEmployeeOnProjectDto changeEmployeeOnProjectDto)
+    {
+        var project = await _projectRepository.GetByIdAsync(projectId);
+
+        if (changeEmployeeOnProjectDto.EmployeesIds != null)
+        {
+            var employees = await _employeeRepository.GetEmployeesByIdsAsync(changeEmployeeOnProjectDto.EmployeesIds);
+            
+            project.Employees = employees.ToList();
+            
+        }
+
+        if (changeEmployeeOnProjectDto.ProjectManagerId != null)
+        {
+            project.ProjectManagerId = changeEmployeeOnProjectDto.ProjectManagerId.Value;
+         }
+        
+        await _projectRepository.SaveChangesAsync();
+    }
+}   

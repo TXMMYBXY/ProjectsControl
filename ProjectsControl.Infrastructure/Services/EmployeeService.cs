@@ -2,6 +2,7 @@ using AutoMapper;
 using ProjectsControl.Application.Repository;
 using ProjectsControl.Application.Services.Employee;
 using ProjectsControl.Application.Services.Employee.Dtos;
+using ProjectsControl.Application.Services.Project.Dtos;
 using ProjectsControl.Entity.Models;
 
 namespace ProjectsControl.Infrastructure.Services;
@@ -59,6 +60,8 @@ public class EmployeeService : IEmployeeService
     {
         var employee = await _employeeRepository.GetByIdAsync(employeeId);
         
+        GeneralService.CheckForNull(employee, "Employee not found");
+        
         _mapper.Map(updateEmployeeDto, employee);
         
         _employeeRepository.UpdateFields(employee);
@@ -72,6 +75,20 @@ public class EmployeeService : IEmployeeService
 
         if (employee != null) _employeeRepository.Delete(employee);
 
+        await _employeeRepository.SaveChangesAsync();
+    }
+
+    public async Task ChangeProjectEmployeeAsync(int employeeId, ChangeProjectEmployeeDto changeProjectEmployeeDto)
+    {
+        var employee = await _employeeRepository.GetByIdAsync(employeeId);
+        
+        GeneralService.CheckForNull(employee, "Employee not found");
+        GeneralService.CheckForNull(changeProjectEmployeeDto.ProjectsIds, "Empty argument");
+        
+        var projects = await _projectRepository.GetProjectsByIdAsync(changeProjectEmployeeDto.ProjectsIds);
+        
+        employee.Projects =  projects.ToList();
+        
         await _employeeRepository.SaveChangesAsync();
     }
 }

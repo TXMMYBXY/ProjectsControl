@@ -14,12 +14,6 @@ public class UpdateProjectViewModel
     [JsonPropertyName("performingCompany")]
     public string? PerformingCompany { get; set; }
     
-    [JsonPropertyName("employeesIds")]
-    public int[]? EmployeesIds { get; set; }
-    
-    [JsonPropertyName("projectManagerId")]
-    public int? ProjectManagerId { get; set; }
-    
     [JsonPropertyName("startDate")]
     public DateTime? StartDate { get; set; }
     

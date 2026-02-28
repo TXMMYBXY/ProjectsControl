@@ -48,13 +48,13 @@ public class ProjectController : ControllerBase
         return Created(nameof(projectViewModel), projectViewModel);
     }
 
-    [HttpPut("{projectId:int}")]
+    [HttpPatch("{projectId:int}")]
     public async Task<ActionResult> UpdateProjectById(int projectId, 
         [FromBody] UpdateProjectViewModel updateProjectViewModel)
     {
-        var updateProjectDto = _mapper.Map<UpdateProjectDto>(updateProjectViewModel);
+        var updateProjectDto = _mapper.Map<UpdateProjectInfoDto>(updateProjectViewModel);
         
-        await _projectService.UpdateProjectAsync(projectId, updateProjectDto);
+        await _projectService.UpdateProjectInfoAsync(projectId, updateProjectDto);
         
         return Ok();
     }
@@ -66,4 +66,15 @@ public class ProjectController : ControllerBase
         
         return Ok();
     }
-}
+
+    [HttpPatch("{projectId:int}/change-employees")]
+    public async Task<ActionResult> ChangeEmployeesOnProject(int projectId,
+        ChangeEmployeesOnProjectViewModel changeEmployeesOnProjectViewModel)
+    {
+        var changeEmployeesOnDto = _mapper.Map<ChangeEmployeeOnProjectDto>(changeEmployeesOnProjectViewModel);
+        
+        await _projectService.ChangeEmployeesOnProjectAsync(projectId, changeEmployeesOnDto);
+        
+        return Ok();
+    }
+} 

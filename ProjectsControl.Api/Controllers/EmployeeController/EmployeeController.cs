@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProjectsControl.Api.Controllers.EmployeeController.VIewModels;
 using ProjectsControl.Application.Services.Employee;
 using ProjectsControl.Application.Services.Employee.Dtos;
+using ProjectsControl.Application.Services.Project.Dtos;
 
 namespace ProjectsControl.Api.Controllers.EmployeeController;
 
@@ -62,6 +63,16 @@ public class EmployeeController : ControllerBase
     public async Task<ActionResult> DeleteEmployeeById(int employeeId)
     {
         await  _employeeService.DeleteEmployeeAsync(employeeId);
+        
+        return Ok();
+    }
+
+    [HttpPatch("{employeeId:int}/changeProjects")]
+    public async Task<ActionResult> ChangeProjects(int employeeId, ChangeProjectEmployeeViewModel changeProjectViewModel)
+    {
+        var changeProjectEmployeeDto = _mapper.Map<ChangeProjectEmployeeDto>(changeProjectViewModel);
+        
+        await _employeeService.ChangeProjectEmployeeAsync(employeeId, changeProjectEmployeeDto);
         
         return Ok();
     }
