@@ -8,5 +8,5 @@ public class DataBaseConnectionSettings
     public string Username { get; set; }
     public string Password { get; set; }
 
-    public string ConnectionString => $"Server={Host}, {Port};Database={Database};User Id={Username};Password={Password};TrustServerCertificate=True";
+    public string ConnectionString => $"Server={Host},{Port};Database={Database};User Id={Username};Password={Password};TrustServerCertificate=True";
 }

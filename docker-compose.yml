@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ProjectsControl.Api/Dockerfile
+    container_name: projects_api
+    ports:
+      - "5202:8080"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    volumes:
+      - project_storage:/app/storage
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: projects_db
+    environment:
+      SA_PASSWORD: ${SA_PASSWORD}
+      ACCEPT_EULA: ${ACCEPT_EULA}
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+
+volumes:
+  project_storage:
+  mssql_data:

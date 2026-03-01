@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using ProjectsControl.Entity.Models;
 
@@ -21,5 +22,10 @@ public class UpdateProjectViewModel
     public DateTime? FinishDate { get; set; }
     
     [JsonPropertyName("priority")]
+    [Range(0, 10)]
     public int? Priority { get; set; }
+
+    [JsonPropertyName("status")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public ProjectStatus? Status { get; set; }
 }
