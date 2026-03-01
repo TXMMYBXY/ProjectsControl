@@ -26,7 +26,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         _dbset.Remove(entity);
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<IReadOnlyList<T>?> GetAllAsync()
     {
         return await _dbset.ToListAsync();
     }

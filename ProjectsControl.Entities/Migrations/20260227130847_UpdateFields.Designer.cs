@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectsControl.Entity.Data;
 
@@ -11,9 +12,11 @@ using ProjectsControl.Entity.Data;
 namespace ProjectsControl.Entity.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260227130847_UpdateFields")]
+    partial class UpdateFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,26 +51,31 @@ namespace ProjectsControl.Entity.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
+                        .HasMaxLength(63)
                         .HasColumnType("nvarchar(63)")
                         .HasColumnName("Email");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
+                        .HasMaxLength(63)
                         .HasColumnType("nvarchar(63)")
                         .HasColumnName("FirstName");
 
                     b.Property<string>("LastName")
                         .IsRequired()
+                        .HasMaxLength(63)
                         .HasColumnType("nvarchar(63)")
                         .HasColumnName("LastName");
 
                     b.Property<string>("Patronymic")
                         .IsRequired()
+                        .HasMaxLength(63)
                         .HasColumnType("nvarchar(63)")
                         .HasColumnName("Patronymic");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
+                        .HasMaxLength(31)
                         .HasColumnType("nvarchar(31)")
                         .HasColumnName("PhoneNumber");
 

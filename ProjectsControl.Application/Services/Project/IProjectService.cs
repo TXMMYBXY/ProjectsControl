@@ -6,8 +6,9 @@ namespace ProjectsControl.Application.Services.Project;
 public interface IProjectService
 {
     Task<List<GetProjectDto>> GetAllProjectsAsync();
-    Task<GetProjectDto> GetProjectAsync(int projectId);
-    Task CreateProjectAsync(CreateProjectDto createProjectDto);
-    Task UpdateProjectAsync(int projectId, UpdateProjectDto updateProjectDto);
+    Task<GetProjectDto> GetProjectByIdAsync(int projectId);
+    Task<CreateProjectDto> CreateProjectAsync(CreateProjectDto createProjectDto);
+    Task UpdateProjectInfoAsync(int projectId, UpdateProjectInfoDto updateProjectInfoDto);
     Task DeleteProjectAsync(int projectId);
+    Task ChangeEmployeesOnProjectAsync(int projectId, ChangeEmployeeOnProjectDto changeEmployeeOnProjectDto);
 }

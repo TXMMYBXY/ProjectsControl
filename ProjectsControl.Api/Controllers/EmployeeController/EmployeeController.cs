@@ -2,6 +2,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ProjectsControl.Api.Controllers.EmployeeController.VIewModels;
 using ProjectsControl.Application.Services.Employee;
+using ProjectsControl.Application.Services.Employee.Dtos;
+using ProjectsControl.Application.Services.Project.Dtos;
 
 namespace ProjectsControl.Api.Controllers.EmployeeController;
 
@@ -21,31 +23,57 @@ public class EmployeeController : ControllerBase
     [HttpGet("all")]
     public async Task<ActionResult<List<GetEmployeeViewModel>>> GetAllEmployees()
     {
-        throw new NotImplementedException();
+        var employeesListDto = await _employeeService.GetAllEmployeesAsync();
+        var employeesListViewModel = _mapper.Map<List<GetEmployeeViewModel>>(employeesListDto);
+        
+        return Ok(employeesListViewModel);
     }
     
     [HttpGet("{employeeId:int}")]
-    public async Task<ActionResult<List<GetEmployeeViewModel>>> GetEmployeeById([FromRoute] int employeeId)
+    public async Task<ActionResult<GetEmployeeViewModel>> GetEmployeeById([FromRoute] int employeeId)
     {
-        throw new NotImplementedException();
+        var employeeDto = await _employeeService.GetEmployeeAsync(employeeId);
+        var employeeViewModel = _mapper.Map<GetEmployeeViewModel>(employeeDto);
+        
+        return Ok(employeeViewModel);
     }
     
     [HttpPost]
-    public async Task<ActionResult> CreateEmployee([FromBody] CreateEmployeeViewModel createEmployeeViewModel)
+    public async Task<ActionResult<CreateEmployeeViewModel>> CreateEmployee(
+        [FromBody] CreateEmployeeViewModel createEmployeeViewModel)
     {
-        throw new NotImplementedException();
+        var createEmployeeDto = _mapper.Map<CreateEmployeeDto>(createEmployeeViewModel);
+        var employeeDto = await _employeeService.CreateEmployeeAsync(createEmployeeDto);
+        var employeeViewModel = _mapper.Map<CreateEmployeeViewModel>(employeeDto);
+        
+        return Created(nameof(employeeViewModel), employeeViewModel);
     }
     
     [HttpPatch("{employeeId:int}")]
     public async Task<ActionResult> UpdateEmployeeById(int employeeId, 
-        [FromBody] UpdateEmployeViewModel updateEmployeeViewModel)
+        [FromBody] UpdateEmployeeViewModel updateEmployeeViewModel)
     {
-        throw new NotImplementedException();
+        var  updateEmployeeDto = _mapper.Map<UpdateEmployeeDto>(updateEmployeeViewModel);
+        await _employeeService.UpdateEmployeeAsync(employeeId, updateEmployeeDto);
+
+        return Ok();
     }
 
     [HttpDelete("{employeeId:int}")]
     public async Task<ActionResult> DeleteEmployeeById(int employeeId)
     {
-        throw new NotImplementedException();
+        await  _employeeService.DeleteEmployeeAsync(employeeId);
+        
+        return Ok();
+    }
+
+    [HttpPatch("{employeeId:int}/changeProjects")]
+    public async Task<ActionResult> ChangeProjects(int employeeId, ChangeProjectEmployeeViewModel changeProjectViewModel)
+    {
+        var changeProjectEmployeeDto = _mapper.Map<ChangeProjectEmployeeDto>(changeProjectViewModel);
+        
+        await _employeeService.ChangeProjectEmployeeAsync(employeeId, changeProjectEmployeeDto);
+        
+        return Ok();
     }
 }

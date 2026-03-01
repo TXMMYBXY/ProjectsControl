@@ -5,39 +5,42 @@ namespace ProjectsControl.Application.Repository;
 public interface IBaseRepository<T> where T : class
 {
     /// <summary>
-    /// Возврат всех записей
+    /// Returns all elements from table
     /// </summary>
-    Task<IEnumerable<T>> GetAllAsync();
+    /// <returns>IReadOnlyList</returns>
+    /// <typeparam name="T">Entity</typeparam>
+    Task<IReadOnlyList<T>?> GetAllAsync();
 
     /// <summary>
-    /// Возврат записи по id
+    /// Returns element by id
     /// </summary>
+    /// <typeparam name="T">Entity</typeparam>
     Task<T?> GetByIdAsync(int id);
 
     /// <summary>
-    /// Добавление записи
+    /// Add element
     /// </summary>
     Task AddAsync(T entity);
 
     /// <summary>
-    /// Обновление записи
+    /// Update element
     /// </summary>
     void Update(T entity);
 
     /// <summary>
-    /// Удаление записи
+    /// Delete element
     /// </summary>
     void Delete(T entity);
 
     /// <summary>
-    /// Сохранение изменений в таблицах
+    /// Save changes in context
     /// </summary>
     Task SaveChangesAsync();
 
     /// <summary>
-    /// Обновление записией в таблице
+    /// Update fields in table
     /// </summary>
-    /// <param name="entity">Сущность, у которой надо изменить свойства</param>
-    /// <param name="fields">Свойства, которые меняются(в виде функции)</param>
+    /// <param name="entity">Entity that need to update</param>
+    /// <param name="fields">Props that will change(in expression)</param>
     void UpdateFields(T entity, params Expression<Func<T, object>>[] fields);
 }

@@ -1,6 +1,6 @@
-namespace ProjectsControl.Application.Services.Employee.Dtos;
+namespace ProjectsControl.Application.Services.Project.Dtos;
 
-public class GetEmployeeDto
+public class EmployeeInProjectDto
 {
     public int Id { get; set; }
     public string FirstName { get; set; }
@@ -8,5 +8,4 @@ public class GetEmployeeDto
     public string Patronymic { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
-    public List<ProjectByEmployeeDto> Projects { get; set; }
 }
