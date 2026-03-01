@@ -2,5 +2,5 @@ namespace ProjectsControl.Api.Controllers.EmployeeController.VIewModels;
 
 public class ChangeProjectEmployeeViewModel
 {
-    public int[]? ProjectsIds { get; set; }
+    public List<int> ProjectsIds { get; set; }
 }

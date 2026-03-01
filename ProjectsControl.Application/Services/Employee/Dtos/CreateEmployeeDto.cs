@@ -7,5 +7,5 @@ public class CreateEmployeeDto
     public string Patronymic { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
-    public int[]? ProjectsIds { get; set; }
+    public List<int>? ProjectsIds { get; set; }
 }

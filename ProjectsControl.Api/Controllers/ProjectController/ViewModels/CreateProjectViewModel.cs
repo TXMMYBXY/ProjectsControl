@@ -18,7 +18,7 @@ public class CreateProjectViewModel
     public string PerformingCompany { get; set; }
     
     [JsonPropertyName("employeesIds")]
-    public int[]? EmployeesIds { get; set; }
+    public List<int>? EmployeesIds { get; set; }
     
     [JsonPropertyName("projectManagerId")]
     public int? ProjectManagerId { get; set; }

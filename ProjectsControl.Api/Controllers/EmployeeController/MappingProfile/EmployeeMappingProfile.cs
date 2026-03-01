@@ -16,5 +16,7 @@ public class EmployeeMappingProfile : Profile
         
         //PATCH
         CreateMap<UpdateEmployeeViewModel, UpdateEmployeeDto>().ReverseMap();
+            
+        CreateMap<ChangeProjectEmployeeViewModel, ChangeProjectEmployeeDto>().ReverseMap();
     }
 }

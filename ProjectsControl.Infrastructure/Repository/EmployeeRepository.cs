@@ -22,4 +22,9 @@ public class EmployeeRepository : BaseRepository<Employee>, IEmployeeRepository
     {
         return await _dbContext.Employees.Where(e => employeesIds.Contains(e.Id)).ToListAsync();
     }
+
+    public Task<Employee> GetEmployeeByIdAsync(int employeeId)
+    {
+        return _dbContext.Employees.Include(e => e.Projects).FirstOrDefaultAsync(e => e.Id == employeeId);
+    }
 }

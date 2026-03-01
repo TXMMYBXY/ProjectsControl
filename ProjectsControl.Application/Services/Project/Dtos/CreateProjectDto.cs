@@ -5,7 +5,7 @@ public class CreateProjectDto
     public string Title { get; set; }
     public string CustomerCompany { get; set; }
     public string PerformingCompany { get; set; }
-    public int[] EmployeesIds { get; set; }
+    public List<int>? EmployeesIds { get; set; }
     public int ProjectManagerId { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime FinishDate { get; set; }

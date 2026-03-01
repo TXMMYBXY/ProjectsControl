@@ -33,7 +33,10 @@ public class EmployeeService : IEmployeeService
 
     public async Task<GetEmployeeDto> GetEmployeeAsync(int employeeId)
     {
-        var employee = await _employeeRepository.GetByIdAsync(employeeId);
+        var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId);
+        
+        GeneralService.CheckForNull(employee, "Employee not found");
+        
         var employeeDto = _mapper.Map<GetEmployeeDto>(employee);
         
         return employeeDto;
@@ -43,9 +46,9 @@ public class EmployeeService : IEmployeeService
     {
         var employee = _mapper.Map<Employee>(createEmployeeDto);
 
-        if (createEmployeeDto.ProjectsIds.Length != 0)
+        if (createEmployeeDto.ProjectsIds.Count != 0)
         {
-            var projects = await _projectRepository.GetProjectsByIdAsync(createEmployeeDto.ProjectsIds);
+            var projects = await _projectRepository.GetProjectsByIdAsync(createEmployeeDto.ProjectsIds.ToArray());
             
             employee.Projects = projects.ToList();
         }
@@ -58,13 +61,11 @@ public class EmployeeService : IEmployeeService
 
     public async Task UpdateEmployeeAsync(int employeeId, UpdateEmployeeDto updateEmployeeDto)
     {
-        var employee = await _employeeRepository.GetByIdAsync(employeeId);
+        var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId);
         
         GeneralService.CheckForNull(employee, "Employee not found");
         
         _mapper.Map(updateEmployeeDto, employee);
-        
-        _employeeRepository.UpdateFields(employee);
         
         await _employeeRepository.SaveChangesAsync();
     }
@@ -80,12 +81,12 @@ public class EmployeeService : IEmployeeService
 
     public async Task ChangeProjectEmployeeAsync(int employeeId, ChangeProjectEmployeeDto changeProjectEmployeeDto)
     {
-        var employee = await _employeeRepository.GetByIdAsync(employeeId);
+        var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId);
         
         GeneralService.CheckForNull(employee, "Employee not found");
         GeneralService.CheckForNull(changeProjectEmployeeDto.ProjectsIds, "Empty argument");
         
-        var projects = await _projectRepository.GetProjectsByIdAsync(changeProjectEmployeeDto.ProjectsIds);
+        var projects = await _projectRepository.GetProjectsByIdAsync(changeProjectEmployeeDto.ProjectsIds.ToArray());
         
         employee.Projects =  projects.ToList();
         

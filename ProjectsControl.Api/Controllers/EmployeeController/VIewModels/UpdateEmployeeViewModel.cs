@@ -24,7 +24,4 @@ public class UpdateEmployeeViewModel
     [MaxLength(31)]
     [JsonPropertyName("phoneNumber")]
     public string? PhoneNumber { get; set; }
-    
-    [JsonPropertyName("projectsIds")]
-    public int[]? ProjectsIds { get; set; }
 }

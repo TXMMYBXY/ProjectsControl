@@ -25,10 +25,14 @@ public class EmployeeMappingProfile : Profile
         CreateMap<UpdateEmployeeDto, Entity.Models.Employee>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Projects, opt => opt.Ignore())
-            .ForMember(dest => dest.ManagedProjects, opt => opt.Ignore());
+            .ForMember(dest => dest.ManagedProjects, opt => opt.Ignore())
+            .ForAllMembers(opts =>
+                opts.Condition((src, dest, srcMember) => srcMember != null));
 
-        CreateMap<Entity.Models.Employee, UpdateEmployeeDto>()
-            .ForMember(dest => dest.ProjectsIds, opt => opt.Ignore())
-            .ForMember(dest => dest.ManagedProjectsIds, opt => opt.Ignore());
+        CreateMap<Entity.Models.Employee, UpdateEmployeeDto>();
+        
+        CreateMap<ChangeProjectEmployeeDto, Entity.Models.Employee>()
+            .ForAllMembers(opts =>
+                opts.Condition((src, dest, srcMember) => srcMember != null));
     }
 }

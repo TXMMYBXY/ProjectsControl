@@ -33,7 +33,7 @@ public class ProjectService : IProjectService
 
     public async Task<GetProjectDto> GetProjectByIdAsync(int projectId)
     {
-        var project = await _projectRepository.GetByIdAsync(projectId);
+        var project = await _projectRepository.GetProjectByIdAsync(projectId);
         
         GeneralService.CheckForNull(project, "Project not found");
         
@@ -45,16 +45,14 @@ public class ProjectService : IProjectService
     public async Task<CreateProjectDto> CreateProjectAsync(CreateProjectDto createProjectDto)
     {
         var project = _mapper.Map<Project>(createProjectDto);
-        var employees = await _employeeRepository.GetEmployeesByIdsAsync(createProjectDto.EmployeesIds);
+        var employees = await _employeeRepository.GetEmployeesByIdsAsync(createProjectDto.EmployeesIds.ToArray());
         var projectManager = await _employeeRepository.GetByIdAsync(createProjectDto.ProjectManagerId);
 
         if (projectManager != null && !createProjectDto.EmployeesIds.Contains(projectManager.Id))
         {
             project.Employees.Add(projectManager);
             
-            createProjectDto.EmployeesIds = createProjectDto.EmployeesIds
-                .Append(projectManager.Id)
-                .ToArray();
+            createProjectDto.EmployeesIds.Add(projectManager.Id);
         }
         
         project.Employees.AddRange(employees.ToList());
@@ -87,21 +85,25 @@ public class ProjectService : IProjectService
 
     public async Task ChangeEmployeesOnProjectAsync(int projectId, ChangeEmployeeOnProjectDto changeEmployeeOnProjectDto)
     {
-        var project = await _projectRepository.GetByIdAsync(projectId);
+        var project = await _projectRepository.GetProjectByIdAsync(projectId);
+        
+        if (changeEmployeeOnProjectDto.ProjectManagerId != null)
+        {
+            project.ProjectManagerId = changeEmployeeOnProjectDto.ProjectManagerId;
+        }
 
         if (changeEmployeeOnProjectDto.EmployeesIds != null)
         {
-            var employees = await _employeeRepository.GetEmployeesByIdsAsync(changeEmployeeOnProjectDto.EmployeesIds);
+            if (!changeEmployeeOnProjectDto.EmployeesIds.Contains(changeEmployeeOnProjectDto.ProjectManagerId))
+            {
+                changeEmployeeOnProjectDto.EmployeesIds.Add(changeEmployeeOnProjectDto.ProjectManagerId);
+            }
+            var employees = await _employeeRepository.GetEmployeesByIdsAsync(changeEmployeeOnProjectDto.EmployeesIds.ToArray());
             
             project.Employees = employees.ToList();
-            
         }
-
-        if (changeEmployeeOnProjectDto.ProjectManagerId != null)
-        {
-            project.ProjectManagerId = changeEmployeeOnProjectDto.ProjectManagerId.Value;
-         }
         
         await _projectRepository.SaveChangesAsync();
     }
+    
 }   
