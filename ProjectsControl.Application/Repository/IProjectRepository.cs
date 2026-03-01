@@ -8,4 +8,5 @@ public interface IProjectRepository : IBaseRepository<Project>
     Task<IReadOnlyList<Project>?> GetProjectsByIdAsync(params int[] projectIds);
     Task<IReadOnlyList<Project>?> GetAllProjectsAsync();
     Task<Project?> GetProjectByIdAsync(int projectId);
+    Task<IReadOnlyList<Project>?> GetManagedProjectsByEmployeeIdAsync(int employeeId);
 }
