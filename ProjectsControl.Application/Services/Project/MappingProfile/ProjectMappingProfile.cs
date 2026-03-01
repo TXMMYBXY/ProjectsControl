@@ -11,6 +11,10 @@ public class ProjectMappingProfile : Profile
         CreateMap<GetProjectDto, Entity.Models.Project>().ReverseMap();
         CreateMap<EmployeeInProjectDto, Entity.Models.Employee>().ReverseMap();
         
+        CreateMap<Entity.Models.Document, GetDocumentDto>()
+            .ForMember(dest => dest.FileName,
+                opt => opt.MapFrom(src => src.Title));
+        
         //Profiles for POST
         CreateMap<Entity.Models.Project, CreateProjectDto>()
             .ForMember(dest => dest.EmployeesIds, opt => opt.Ignore());

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectsControl.Entity.Data;
 
@@ -11,9 +12,11 @@ using ProjectsControl.Entity.Data;
 namespace ProjectsControl.Entity.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260301090019_NewContext")]
+    partial class NewContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,20 +133,17 @@ namespace ProjectsControl.Entity.Migrations
                         .HasColumnType("nvarchar(63)")
                         .HasColumnName("PerformingCompany");
 
-                    b.Property<byte>("Priority")
-                        .HasColumnType("tinyint")
+                    b.Property<int>("Priority")
+                        .HasColumnType("int")
                         .HasColumnName("Priority");
 
-                    b.Property<int?>("ProjectManagerId")
+                    b.Property<int>("ProjectManagerId")
                         .HasColumnType("int")
                         .HasColumnName("ProjectManagerId");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("date")
                         .HasColumnName("StartDate");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -189,7 +189,8 @@ namespace ProjectsControl.Entity.Migrations
                     b.HasOne("ProjectsControl.Entity.Models.Employee", "ProjectManager")
                         .WithMany("ManagedProjects")
                         .HasForeignKey("ProjectManagerId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("ProjectManager");
                 });

@@ -32,4 +32,11 @@ public class GetProjectViewModel
     
     [JsonPropertyName("priority")]
     public int Priority { get; set; }
+
+    [JsonPropertyName("status")]
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public ProjectStatus Status { get; set; }
+    
+    public List<GetDocumentDto> Documents { get; set; }
 }

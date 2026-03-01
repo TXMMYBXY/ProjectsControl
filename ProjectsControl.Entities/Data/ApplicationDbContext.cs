@@ -12,6 +12,7 @@ public class ApplicationDbContext : DbContext
     
     public DbSet<Project> Projects { get; set; }
     public DbSet<Employee> Employees { get; set; }
+    public DbSet<Document> Documents { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,6 +27,12 @@ public class ApplicationDbContext : DbContext
             .HasOne(p => p.ProjectManager)
             .WithMany(e => e.ManagedProjects)
             .HasForeignKey(p => p.ProjectManagerId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.SetNull);
+        
+        modelBuilder.Entity<Document>()
+            .HasOne(d => d.Project)
+            .WithMany(p => p.Documents)
+            .HasForeignKey(d => d.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
