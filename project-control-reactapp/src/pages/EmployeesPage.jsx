@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Plus, Search, Mail, Phone, FolderOpen, Pencil, Trash2, Eye, UserCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { Plus, Search, Mail, Phone, FolderOpen, Pencil, Trash2, UserCircle } from 'lucide-react';
 import { useEmployees } from '../hooks/useEmployees.js';
 import { useProjects } from '../hooks/useProjects.js';
 import { employeesApi } from '../api/index.js';
@@ -8,44 +9,39 @@ import { Modal } from '../components/ui/Modal.jsx';
 import { Badge } from '../components/ui/Badge.jsx';
 import { EmployeeForm } from '../components/employees/EmployeeForm.jsx';
 import { useToast } from '../components/ui/Toast.jsx';
-
 export function EmployeesPage() {
   const { employees, loading, error, refetch } = useEmployees();
   const { projects } = useProjects();
   const { showToast } = useToast();
-
+  const location = useLocation();
   const [search, setSearch] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
   const [editEmployee, setEditEmployee] = useState(null);
-  const [viewEmployee, setViewEmployee] = useState(null);
   const [deleteEmployee, setDeleteEmployee] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
-
+  // Открываем конкретного сотрудника из location.state (с дашборда)
+  useEffect(() => {
+    if (!location.state?.openEmployeeId || employees.length === 0) return;
+    const found = employees.find(e => e.id === location.state.openEmployeeId);
+    if (found) setEditEmployee(found);
+    window.history.replaceState({}, '');
+  }, [location.state, employees]);
   const filtered = employees.filter(emp => {
     const full = [emp.lastName, emp.firstName, emp.patronymic].filter(Boolean).join(' ').toLowerCase();
     const q = search.toLowerCase();
     return full.includes(q) || (emp.email ?? '').toLowerCase().includes(q) || (emp.phoneNumber ?? '').includes(q);
   });
-
   const handleCreate = async (data) => {
     await employeesApi.create(data);
     showToast('Сотрудник добавлен');
     setCreateOpen(false);
     refetch();
   };
-
-  // При редактировании форма сама вызвала update + changeProjects
-  // onSubmit вызывается с null — просто закрываем и рефетчим
-  const handleEditDone = async (data) => {
-    if (data !== null) {
-      // Fallback (не ожидается в edit mode)
-      await employeesApi.update(editEmployee.id, data);
-    }
+  const handleEditDone = async () => {
     showToast('Данные сотрудника обновлены');
     setEditEmployee(null);
     refetch();
   };
-
   const handleDelete = async () => {
     if (!deleteEmployee) return;
     try {
@@ -60,19 +56,15 @@ export function EmployeesPage() {
       setDeleteLoading(false);
     }
   };
-
   const getInitials = (emp) =>
     [(emp.firstName ?? '')[0], (emp.lastName ?? '')[0]].filter(Boolean).join('').toUpperCase() || '?';
-
   const getFullName = (emp) =>
     [emp.lastName, emp.firstName, emp.patronymic].filter(Boolean).join(' ') || 'Без имени';
-
   const avatarColors = [
     'bg-indigo-500', 'bg-violet-500', 'bg-pink-500', 'bg-blue-500',
     'bg-emerald-500', 'bg-orange-500', 'bg-teal-500', 'bg-rose-500',
   ];
   const getAvatarColor = (id) => avatarColors[id % avatarColors.length];
-
   if (loading) return <Spinner />;
   if (error) return (
     <div className="flex items-center justify-center py-16">
@@ -84,7 +76,6 @@ export function EmployeesPage() {
       </div>
     </div>
   );
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -102,7 +93,6 @@ export function EmployeesPage() {
           Добавить сотрудника
         </button>
       </div>
-
       <div className="relative">
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
         <input
@@ -112,7 +102,6 @@ export function EmployeesPage() {
           className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white"
         />
       </div>
-
       {filtered.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           <UserCircle size={40} className="mx-auto mb-3 opacity-30" />
@@ -122,31 +111,29 @@ export function EmployeesPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {filtered.map(emp => (
             <div key={emp.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-3">
+              {/* Шапка */}
               <div className="flex items-center gap-3">
                 <div className={`w-11 h-11 rounded-full ${getAvatarColor(emp.id)} flex items-center justify-center text-white font-bold text-sm shrink-0`}>
                   {getInitials(emp)}
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="font-semibold text-gray-900 text-sm truncate">{getFullName(emp)}</p>
-                  <p className="text-xs text-gray-400">ID: {emp.id}</p>
+                  {emp.email && (
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <Mail size={10} className="text-indigo-400 shrink-0" />
+                      <span className="text-xs text-gray-400 truncate">{emp.email}</span>
+                    </div>
+                  )}
                 </div>
               </div>
-
-              <div className="space-y-1.5">
-                {emp.email && (
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <Mail size={12} className="shrink-0 text-indigo-400" />
-                    <span className="truncate">{emp.email}</span>
-                  </div>
-                )}
-                {emp.phoneNumber && (
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <Phone size={12} className="shrink-0 text-indigo-400" />
-                    <span>{emp.phoneNumber}</span>
-                  </div>
-                )}
-              </div>
-
+              {/* Телефон */}
+              {emp.phoneNumber && (
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <Phone size={12} className="shrink-0 text-indigo-400" />
+                  <span>{emp.phoneNumber}</span>
+                </div>
+              )}
+              {/* Проекты */}
               <div className="flex items-start gap-2">
                 <FolderOpen size={12} className="text-gray-400 shrink-0 mt-0.5" />
                 <div className="flex flex-wrap gap-1">
@@ -158,19 +145,13 @@ export function EmployeesPage() {
                   }
                 </div>
               </div>
-
-              <div className="flex gap-2 mt-auto pt-2 border-t border-gray-50">
-                <button
-                  onClick={() => setViewEmployee(emp)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
-                >
-                  <Eye size={13} /> Подробнее
-                </button>
+              {/* Кнопки */}
+              <div className="flex gap-2 mt-auto pt-2 border-t border-gray-50 justify-end">
                 <button
                   onClick={() => setEditEmployee(emp)}
-                  className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
+                  className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
                 >
-                  <Pencil size={13} />
+                  <Pencil size={13} /> Редактировать
                 </button>
                 <button
                   onClick={() => setDeleteEmployee(emp)}
@@ -183,12 +164,10 @@ export function EmployeesPage() {
           ))}
         </div>
       )}
-
       {/* Создание */}
       <Modal open={createOpen} onClose={() => setCreateOpen(false)} title="Новый сотрудник" size="md">
         <EmployeeForm mode="create" projects={projects} onSubmit={handleCreate} onCancel={() => setCreateOpen(false)} />
       </Modal>
-
       {/* Редактирование */}
       <Modal open={!!editEmployee} onClose={() => setEditEmployee(null)} title="Редактировать сотрудника" size="md">
         {editEmployee && (
@@ -201,59 +180,6 @@ export function EmployeesPage() {
           />
         )}
       </Modal>
-
-      {/* Просмотр */}
-      <Modal open={!!viewEmployee} onClose={() => setViewEmployee(null)} title={viewEmployee ? getFullName(viewEmployee) : ''} size="md">
-        {viewEmployee && (
-          <div className="space-y-5">
-            <div className="flex items-center gap-4">
-              <div className={`w-16 h-16 rounded-2xl ${getAvatarColor(viewEmployee.id)} flex items-center justify-center text-white text-xl font-bold`}>
-                {getInitials(viewEmployee)}
-              </div>
-              <div>
-                <p className="font-semibold text-gray-900">{getFullName(viewEmployee)}</p>
-                <p className="text-sm text-gray-400">ID: {viewEmployee.id}</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-3">
-              {viewEmployee.email && (
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                  <Mail size={16} className="text-indigo-400 shrink-0" />
-                  <div>
-                    <p className="text-xs text-gray-400">Email</p>
-                    <p className="text-sm text-gray-800">{viewEmployee.email}</p>
-                  </div>
-                </div>
-              )}
-              {viewEmployee.phoneNumber && (
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                  <Phone size={16} className="text-indigo-400 shrink-0" />
-                  <div>
-                    <p className="text-xs text-gray-400">Телефон</p>
-                    <p className="text-sm text-gray-800">{viewEmployee.phoneNumber}</p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div>
-              <p className="text-xs font-medium text-gray-500 mb-2">Проекты ({viewEmployee.projects?.length ?? 0})</p>
-              {!viewEmployee.projects?.length
-                ? <p className="text-sm text-gray-400">Не участвует в проектах</p>
-                : (
-                  <div className="flex flex-wrap gap-2">
-                    {viewEmployee.projects.map(p => (
-                      <Badge key={p.id} variant="indigo">{p.title}</Badge>
-                    ))}
-                  </div>
-                )
-              }
-            </div>
-          </div>
-        )}
-      </Modal>
-
       {/* Удаление */}
       <Modal open={!!deleteEmployee} onClose={() => setDeleteEmployee(null)} title="Удалить сотрудника?" size="sm">
         {deleteEmployee && (
