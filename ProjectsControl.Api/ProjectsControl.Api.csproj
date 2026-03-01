@@ -23,4 +23,8 @@
       <ProjectReference Include="..\ProjectsControl.Infrastructure\ProjectsControl.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Controllers\DocumentController\" />
+    </ItemGroup>
+
 </Project>
