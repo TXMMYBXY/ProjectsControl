@@ -20,5 +20,5 @@ public interface IProjectService
     /// </summary>
     /// <param name="projectId">Id of target project</param>
     /// <param name="changeEmployeeOnProjectDto">ProjectManagerId and EmployeesIds</param>
-    Task ChangeEmployeesOnProjectAsync(int projectId, ChangeEmployeeOnProjectDto changeEmployeeOnProjectDto);
+    Task ChangeEmployeesAndStatusAsync(int projectId, ChangeEmployeeOnProjectDto changeEmployeeOnProjectDto);
 }

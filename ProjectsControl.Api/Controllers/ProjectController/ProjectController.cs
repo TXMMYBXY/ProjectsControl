@@ -85,13 +85,13 @@ public class ProjectController : ControllerBase
     /// <summary>
     /// Endpoint for updating project`s employees
     /// </summary>
-    [HttpPatch("{projectId:int}/change-employees")]
-    public async Task<ActionResult> ChangeEmployeesOnProject(int projectId,
+    [HttpPatch("{projectId:int}/change-employees-status")]
+    public async Task<ActionResult> ChangeEmployeesAndStatus(int projectId,
         ChangeEmployeesOnProjectViewModel changeEmployeesOnProjectViewModel)
     {
         var changeEmployeesOnDto = _mapper.Map<ChangeEmployeeOnProjectDto>(changeEmployeesOnProjectViewModel);
         
-        await _projectService.ChangeEmployeesOnProjectAsync(projectId, changeEmployeesOnDto);
+        await _projectService.ChangeEmployeesAndStatusAsync(projectId, changeEmployeesOnDto);
         
         return Ok();
     }

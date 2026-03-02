@@ -69,7 +69,7 @@ function getFileIconClass(name) {
   if (['zip','rar','7z'].includes(ext)) return 'text-amber-500';
   return 'text-gray-400';
 }
-// Модал просмотра проекта
+
 function ProjectDetailModal({ project, open, onClose, onGoToProject }) {
   if (!project) return null;
   return (
@@ -174,7 +174,7 @@ function ProjectDetailModal({ project, open, onClose, onGoToProject }) {
     </Modal>
   );
 }
-// Модал просмотра сотрудника
+
 function EmployeeDetailModal({ employee, open, onClose, onGoToEmployee }) {
   if (!employee) return null;
   return (
@@ -252,16 +252,16 @@ export function DashboardPage() {
       colors: PROJECT_STATUS_COLORS[Number(val)],
     }))
     .filter(s => s.count > 0);
-  // Переход в раздел проектов с нужным фильтром
+  
   const goToProjectsWithFilter = (filter) => {
     navigate('/projects', { state: filter });
   };
-  // Открыть раздел проектов и выбрать конкретный проект
+  
   const goToProject = (project) => {
     setSelectedProject(null);
     navigate('/projects', { state: { openProjectId: project.id } });
   };
-  // Открыть раздел сотрудников и выбрать конкретного
+  
   const goToEmployee = (employee) => {
     setSelectedEmployee(null);
     navigate('/employees', { state: { openEmployeeId: employee.id } });

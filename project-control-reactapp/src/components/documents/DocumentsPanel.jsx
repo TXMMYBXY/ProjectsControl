@@ -6,7 +6,6 @@ import {
 } from 'lucide-react';
 import { documentsApi } from '../../api/index.js';
 
-// ─── иконка по расширению ──────────────────────────────────────────────────
 function getFileIcon(name, size = 18) {
   const ext = (name ?? '').split('.').pop().toLowerCase();
   if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'].includes(ext))
@@ -20,7 +19,6 @@ function getFileIcon(name, size = 18) {
   return <File size={size} className="text-gray-400" />;
 }
 
-// ─── форматирование размера ────────────────────────────────────────────────
 function formatBytes(bytes) {
   if (!bytes && bytes !== 0) return '';
   if (bytes < 1024) return `${bytes} Б`;
@@ -28,7 +26,6 @@ function formatBytes(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} МБ`;
 }
 
-// ─── расширение файла ──────────────────────────────────────────────────────
 function getExt(name) {
   const parts = (name ?? '').split('.');
   return parts.length > 1 ? parts.pop().toLowerCase() : '';
@@ -36,7 +33,6 @@ function getExt(name) {
 
 let nextId = 1;
 
-// ─── одна строка в очереди загрузки ───────────────────────────────────────
 function QueueItem({ item, onRetry, onRemove }) {
   return (
     <div className={`flex items-center gap-3 px-4 py-3 transition-colors group
@@ -80,7 +76,6 @@ function QueueItem({ item, onRetry, onRemove }) {
   );
 }
 
-// ─── одна строка существующего документа ──────────────────────────────────
 function DocumentRow({ doc, onDownload, downloading }) {
   return (
     <div className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors group">
@@ -109,17 +104,14 @@ function DocumentRow({ doc, onDownload, downloading }) {
   );
 }
 
-// ─── основной компонент ────────────────────────────────────────────────────
 export function DocumentsPanel({ projectId, projectTitle, initialDocuments = [], onUploaded }) {
-  // -- существующие документы
   const [documents, setDocuments]     = useState(initialDocuments);
   const [docSearch, setDocSearch]     = useState('');
-  const [docSort, setDocSort]         = useState('name'); // 'name' | 'id'
+  const [docSort, setDocSort]         = useState('name');
   const [docSortDir, setDocSortDir]   = useState('asc');
-  const [downloading, setDownloading] = useState(null); // id скачиваемого
+  const [downloading, setDownloading] = useState(null);
   const [downloadError, setDownloadError] = useState(null);
 
-  // -- очередь загрузки
   const [queue, setQueue]   = useState([]);
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef(null);
@@ -128,7 +120,6 @@ export function DocumentsPanel({ projectId, projectTitle, initialDocuments = [],
   const doneCount      = queue.filter(i => i.status === 'done').length;
   const errorCount     = queue.filter(i => i.status === 'error').length;
 
-  // -- фильтрация и сортировка документов
   const filteredDocs = useMemo(() => {
     let list = documents.filter(d =>
       (d.fileName ?? '').toLowerCase().includes(docSearch.toLowerCase())
@@ -147,7 +138,6 @@ export function DocumentsPanel({ projectId, projectTitle, initialDocuments = [],
     else { setDocSort(field); setDocSortDir('asc'); }
   };
 
-  // -- скачать документ
   const handleDownload = async (doc) => {
     setDownloadError(null);
     setDownloading(doc.id);
@@ -160,7 +150,6 @@ export function DocumentsPanel({ projectId, projectTitle, initialDocuments = [],
     }
   };
 
-  // -- загрузить файл
   const updateItem = (id, patch) =>
     setQueue(q => q.map(item => item.id === id ? { ...item, ...patch } : item));
 
@@ -170,7 +159,6 @@ export function DocumentsPanel({ projectId, projectTitle, initialDocuments = [],
     try {
       await documentsApi.upload(projectId, file);
       updateItem(id, { status: 'done' });
-      // Уведомляем родителя, чтобы он рефетчил проект и получил обновлённый список
       if (onUploaded) onUploaded();
     } catch (err) {
       updateItem(id, { status: 'error', error: err.message ?? 'Ошибка загрузки' });

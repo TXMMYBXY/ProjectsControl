@@ -29,7 +29,6 @@ function getEmpLabel(emp) {
   return [emp.lastName, emp.firstName, emp.patronymic].filter(Boolean).join(' ') || `Сотрудник #${emp.id}`;
 }
 
-// Надёжно приводим статус к числу
 function resolveStatus(status) {
   if (status === null || status === undefined) return PROJECT_STATUS.Backlog;
   if (typeof status === 'number') return status;
@@ -61,14 +60,12 @@ export function ProjectForm({ initialData, employees, onSubmit, onCancel, mode }
 
   const set = (field, value) => setForm(f => ({ ...f, [field]: value }));
 
-  // Команда необязательна для Backlog и Архив
   const teamOptional = OPTIONAL_TEAM_STATUSES.has(form.status);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    // Валидация команды только для статусов где она обязательна
     if (!teamOptional) {
       if (!form.projectManagerId) {
         setError('Для выбранного статуса необходимо назначить руководителя проекта.');
@@ -99,14 +96,12 @@ export function ProjectForm({ initialData, employees, onSubmit, onCancel, mode }
         const newMgrId = form.projectManagerId ? Number(form.projectManagerId) : null;
         const newEmpIds = form.employeesIds;
 
-        // Шаг 1: ВСЕГДА сначала обновляем сотрудников и руководителя,
-        // чтобы к моменту проверки статуса в БД были актуальные данные
         await projectsApi.changeEmployees(initialData.id, {
           projectManagerId: newMgrId,
           employeesIds: newEmpIds,
+          status: Number(form.status),
         });
 
-        // Шаг 2: основные поля + статус (апи проверяет команду из БД при смене статуса)
         await projectsApi.update(initialData.id, {
           title: form.title || null,
           customerCompany: form.customerCompany || null,
@@ -114,7 +109,6 @@ export function ProjectForm({ initialData, employees, onSubmit, onCancel, mode }
           startDate: form.startDate ? dateToISO(form.startDate) : null,
           endDate: form.endDate ? dateToISO(form.endDate) : null,
           priority: form.priority !== undefined ? Number(form.priority) : null,
-          status: Number(form.status),
         });
 
         await onSubmit(null);

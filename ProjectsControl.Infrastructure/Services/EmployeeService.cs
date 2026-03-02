@@ -64,7 +64,7 @@ public class EmployeeService : IEmployeeService
 
         GeneralService.CheckForNull(employee, "Employee not found");
 
-        _mapper.Map(updateEmployeeDto, employee);
+        _ApplyEmployeeChanges(employee, updateEmployeeDto);
 
         await _employeeRepository.SaveChangesAsync();
     }
@@ -90,15 +90,35 @@ public class EmployeeService : IEmployeeService
 
     public async Task ChangeProjectEmployeeAsync(int employeeId, ChangeProjectEmployeeDto changeProjectEmployeeDto)
     {
-        var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId);
+        var employee = await _employeeRepository
+            .GetEmployeeByIdAsync(employeeId);
 
         GeneralService.CheckForNull(employee, "Employee not found");
         GeneralService.CheckForNull(changeProjectEmployeeDto.ProjectsIds, "Empty argument");
 
-        var projects = await _projectRepository.GetProjectsByIdAsync(changeProjectEmployeeDto.ProjectsIds.ToArray());
+        var projects = await _projectRepository
+            .GetProjectsByIdAsync(changeProjectEmployeeDto.ProjectsIds.ToArray());
 
         employee.Projects = projects.ToList();
 
         await _employeeRepository.SaveChangesAsync();
+    }
+    
+    private void _ApplyEmployeeChanges(Employee employee, UpdateEmployeeDto updateEmployeeDto)
+    {
+        if (updateEmployeeDto.FirstName != null)
+            employee.FirstName = updateEmployeeDto.FirstName;
+
+        if (updateEmployeeDto.LastName != null)
+            employee.LastName = updateEmployeeDto.LastName;
+
+        if (updateEmployeeDto.Patronymic != null)
+            employee.Patronymic = updateEmployeeDto.Patronymic;
+
+        if (updateEmployeeDto.Email != null)
+            employee.Email = updateEmployeeDto.Email;
+
+        if (updateEmployeeDto.PhoneNumber != null)
+            employee.PhoneNumber = updateEmployeeDto.PhoneNumber;
     }
 }

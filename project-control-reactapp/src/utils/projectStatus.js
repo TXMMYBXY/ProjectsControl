@@ -19,7 +19,6 @@ export const PROJECT_STATUS_LABELS = {
   5: 'Архив',
 };
 
-// Цвет бейджа для каждого статуса
 export const PROJECT_STATUS_COLORS = {
   0: { bg: 'bg-gray-100', text: 'text-gray-600', border: 'border-gray-200', dot: 'bg-gray-400' },
   1: { bg: 'bg-blue-50',  text: 'text-blue-700',  border: 'border-blue-200', dot: 'bg-blue-500' },
@@ -29,7 +28,6 @@ export const PROJECT_STATUS_COLORS = {
   5: { bg: 'bg-slate-100',text: 'text-slate-500', border: 'border-slate-200', dot: 'bg-slate-400' },
 };
 
-// Статусы при которых команда необязательна
 export const OPTIONAL_TEAM_STATUSES = new Set([0, 5]);
 
 export const ALL_STATUSES = Object.entries(PROJECT_STATUS_LABELS).map(([value, label]) => ({

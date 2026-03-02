@@ -82,7 +82,6 @@ export function ProjectsPage() {
   const [docsProject, setDocsProject] = useState(null);
   const [deleteProject, setDeleteProject] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  // Применяем фильтры и открываем проект из location.state (с дашборда)
   useEffect(() => {
     if (!location.state) return;
     const state = location.state;
@@ -96,7 +95,7 @@ export function ProjectsPage() {
       const found = projects.find(p => p.id === state.openProjectId);
       if (found) setViewProject(found);
     }
-    // Очищаем state чтобы при повторном заходе не срабатывало
+    
     window.history.replaceState({}, '');
   }, [location.state, projects]);
   const handleDocUploaded = async () => {

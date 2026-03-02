@@ -1,17 +1,13 @@
 import { PROJECT_STATUS, PROJECT_STATUS_LABELS, PROJECT_STATUS_COLORS } from '../../utils/projectStatus.js';
 
-// Надёжно приводим статус к числу — C# может слать число или строку ("0", "Backlog" и т.д.)
 function resolveStatus(status) {
   if (status === null || status === undefined) return 0;
 
-  // Уже число
   if (typeof status === 'number') return status;
 
-  // Строка с числом: "0", "1", ...
   const asNum = Number(status);
   if (!isNaN(asNum) && String(asNum) === String(status).trim()) return asNum;
 
-  // Строка-имя enum: "Backlog", "Active", ...
   if (PROJECT_STATUS[status] !== undefined) return PROJECT_STATUS[status];
 
   return 0;
