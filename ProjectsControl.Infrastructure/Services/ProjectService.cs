@@ -64,8 +64,7 @@ public class ProjectService : IProjectService
         GeneralService.CheckForNull(project, "Project not found");
 
         _ApplyProjectInfoChanges(project, updateProjectInfoDto);
-        _ValidateProjectState(project);
-
+        
         await _projectRepository.SaveChangesAsync();
     }
 
@@ -148,18 +147,11 @@ public class ProjectService : IProjectService
     /// <exception cref="InvalidOperationException">Inners when invalid status or date</exception>
     private void _ValidateProjectState(Project project)
     {
-        if ((project.Status != ProjectStatus.Backlog || project.Status != ProjectStatus.Archived) 
-            && project.ProjectManagerId == null)
+        if ((project.Status != ProjectStatus.Backlog && project.ProjectManagerId == null) 
+            && (project.Status != ProjectStatus.Archived && project.ProjectManagerId == null))
         {
             throw new InvalidOperationException(
                 $"Project with status '{project.Status}' must have a project manager assigned.");
-        }
-
-        if ((project.Status == ProjectStatus.Completed || project.Status == ProjectStatus.Archived) 
-            && !project.FinishDate.HasValue)
-        {
-            throw new InvalidOperationException(
-                $"Project with status '{project.Status}' must have a finish date.");
         }
     }
 }

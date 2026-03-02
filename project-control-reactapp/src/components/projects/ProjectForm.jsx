@@ -95,13 +95,6 @@ export function ProjectForm({ initialData, employees, onSubmit, onCancel, mode }
       } else {
         const newMgrId = form.projectManagerId ? Number(form.projectManagerId) : null;
         const newEmpIds = form.employeesIds;
-
-        await projectsApi.changeEmployees(initialData.id, {
-          projectManagerId: newMgrId,
-          employeesIds: newEmpIds,
-          status: Number(form.status),
-        });
-
         await projectsApi.update(initialData.id, {
           title: form.title || null,
           customerCompany: form.customerCompany || null,
@@ -110,6 +103,13 @@ export function ProjectForm({ initialData, employees, onSubmit, onCancel, mode }
           endDate: form.endDate ? dateToISO(form.endDate) : null,
           priority: form.priority !== undefined ? Number(form.priority) : null,
         });
+
+        await projectsApi.changeEmployees(initialData.id, {
+          projectManagerId: newMgrId,
+          employeesIds: newEmpIds,
+          status: Number(form.status),
+        });
+
 
         await onSubmit(null);
       }

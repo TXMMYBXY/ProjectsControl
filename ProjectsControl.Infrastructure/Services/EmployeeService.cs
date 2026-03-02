@@ -45,7 +45,7 @@ public class EmployeeService : IEmployeeService
     {
         var employee = _mapper.Map<Employee>(createEmployeeDto);
 
-        if (createEmployeeDto.ProjectsIds.Count != 0)
+        if (createEmployeeDto.ProjectsIds != null)
         {
             var projects = await _projectRepository.GetProjectsByIdAsync(createEmployeeDto.ProjectsIds.ToArray());
 
