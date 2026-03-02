@@ -13,6 +13,5 @@ public class DocumentMappingProfile : Profile
         CreateMap<UploadDocumentViewModel, UploadDocumentDto>()
             .ForMember(dest => dest.FileName, opt => opt.MapFrom(src => src.File.FileName))
             .ForMember(dest => dest.FileLength, opt => opt.MapFrom(src => src.File.Length));
-        
     }
 }

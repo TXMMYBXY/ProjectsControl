@@ -104,7 +104,7 @@ public class ProjectService : IProjectService
     /// <summary>
     /// Validate status
     /// </summary>
-    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="InvalidOperationException">Inners when invalid status or date</exception>
     private void _ValidateProjectState(Project project)
     {
         if (project.Status != ProjectStatus.Backlog && project.ProjectManagerId == null)

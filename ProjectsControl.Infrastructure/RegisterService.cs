@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectsControl.Application.Repository;
 using ProjectsControl.Application.Services.Document;
@@ -16,14 +15,17 @@ public static class ServiceRegistration
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
+        //Register automapper profiles
         services.AddAutoMapper(typeof(EmployeeMappingProfile).Assembly);
         services.AddAutoMapper(typeof(ProjectMappingProfile).Assembly);
         
+        //Register services
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IDocumentService, DocumentService>();
         services.AddScoped<IFileStorageService, FileStorageService>();
         
+        //Register repositories
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
