@@ -91,6 +91,7 @@ docker compose up --build
 ## 📄 API Документация
 <details>
 <summary>Документация</summary>
+
 ```json
 {
   "openapi": "3.0.4",
