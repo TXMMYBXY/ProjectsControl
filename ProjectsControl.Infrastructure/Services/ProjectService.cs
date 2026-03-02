@@ -26,6 +26,7 @@ public class ProjectService : IProjectService
     {
         var projectsList = await _projectRepository.GetAllProjectsAsync();
         var projectListDto = _mapper.Map<List<GetProjectDto>>(projectsList);
+        
         return projectListDto;
     }
 
@@ -118,6 +119,9 @@ public class ProjectService : IProjectService
 
     }
 
+    /// <summary>
+    /// Mapping method for projects`employees and status
+    /// </summary>
     private async Task _ApplyEmployeeChanges(Project project, ChangeEmployeeOnProjectDto changeEmployeeOnProjectDto)
     {
         if (changeEmployeeOnProjectDto.Status.HasValue)
@@ -144,7 +148,8 @@ public class ProjectService : IProjectService
     /// <exception cref="InvalidOperationException">Inners when invalid status or date</exception>
     private void _ValidateProjectState(Project project)
     {
-        if (project.Status != ProjectStatus.Backlog && project.ProjectManagerId == null)
+        if ((project.Status != ProjectStatus.Backlog || project.Status != ProjectStatus.Archived) 
+            && project.ProjectManagerId == null)
         {
             throw new InvalidOperationException(
                 $"Project with status '{project.Status}' must have a project manager assigned.");

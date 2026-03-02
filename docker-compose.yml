@@ -14,6 +14,7 @@ services:
       - .env
     volumes:
       - project_storage:/app/storage
+    restart: always
 
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest

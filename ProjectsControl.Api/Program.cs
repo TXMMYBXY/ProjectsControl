@@ -27,7 +27,14 @@ var dataBaseConnectionSettings = builder.Configuration.GetSection("DataBaseConne
         
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(dataBaseConnectionSettings.ConnectionString);
+    options.UseSqlServer(dataBaseConnectionSettings.ConnectionString,
+        sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 10,
+                maxRetryDelay: TimeSpan.FromSeconds(5),
+                errorNumbersToAdd: null);
+        });
 });
 
 builder.Services.AddAutoMapper(typeof(Program));
