@@ -4,4 +4,4 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 ProjectsControl.sln.DotSettings.user
-/project-control-reactapp
+/project-control-reactapp/node_modules
