@@ -24,8 +24,4 @@ public class UpdateProjectViewModel
     [JsonPropertyName("priority")]
     [Range(0, 10)]
     public int? Priority { get; set; }
-
-    [JsonPropertyName("status")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public ProjectStatus? Status { get; set; }
 }

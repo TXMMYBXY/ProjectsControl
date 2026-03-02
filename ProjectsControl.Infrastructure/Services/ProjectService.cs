@@ -26,6 +26,7 @@ public class ProjectService : IProjectService
     {
         var projectsList = await _projectRepository.GetAllProjectsAsync();
         var projectListDto = _mapper.Map<List<GetProjectDto>>(projectsList);
+        
         return projectListDto;
     }
 
@@ -59,13 +60,11 @@ public class ProjectService : IProjectService
     public async Task UpdateProjectInfoAsync(int projectId, UpdateProjectInfoDto updateProjectInfoDto)
     {
         var project = await _projectRepository.GetByIdAsync(projectId);
-
+        
         GeneralService.CheckForNull(project, "Project not found");
 
-        _mapper.Map(updateProjectInfoDto, project);
-
-        _ValidateProjectState(project);
-
+        _ApplyProjectInfoChanges(project, updateProjectInfoDto);
+        
         await _projectRepository.SaveChangesAsync();
     }
 
@@ -80,21 +79,13 @@ public class ProjectService : IProjectService
         await _projectRepository.SaveChangesAsync();
     }
 
-    public async Task ChangeEmployeesOnProjectAsync(int projectId, ChangeEmployeeOnProjectDto changeEmployeeOnProjectDto)
+    public async Task ChangeEmployeesAndStatusAsync(int projectId, ChangeEmployeeOnProjectDto changeEmployeeOnProjectDto)
     {
         var project = await _projectRepository.GetProjectByIdAsync(projectId);
 
-        if (changeEmployeeOnProjectDto.ProjectManagerId.HasValue)
-        {
-            project.ProjectManagerId = changeEmployeeOnProjectDto.ProjectManagerId;
-        }
+        GeneralService.CheckForNull(project, "Project not found");
 
-        if (changeEmployeeOnProjectDto.EmployeesIds != null)
-        {
-            var employees = await _employeeRepository.GetEmployeesByIdsAsync(changeEmployeeOnProjectDto.EmployeesIds.ToArray());
-
-            project.Employees = employees.ToList();
-        }
+        await _ApplyEmployeeChanges(project, changeEmployeeOnProjectDto);
 
         _ValidateProjectState(project);
 
@@ -102,22 +93,65 @@ public class ProjectService : IProjectService
     }
 
     /// <summary>
+    /// Mapping method for projectInfo
+    /// </summary>
+    private void _ApplyProjectInfoChanges(Project project, UpdateProjectInfoDto updateProjectInfoDto)
+    {
+        if (updateProjectInfoDto.Title != null)
+            project.Title = updateProjectInfoDto.Title;
+
+        if (updateProjectInfoDto.CustomerCompany != null)
+            project.CustomerCompany = updateProjectInfoDto.CustomerCompany;
+
+        if (updateProjectInfoDto.PerformingCompany != null)
+            project.PerformingCompany = updateProjectInfoDto.PerformingCompany;
+
+        if (updateProjectInfoDto.StartDate.HasValue)
+            project.StartDate = updateProjectInfoDto.StartDate.Value;
+
+        if (updateProjectInfoDto.FinishDate != null || updateProjectInfoDto.FinishDate == null)
+            project.FinishDate = updateProjectInfoDto.FinishDate;
+
+        if (updateProjectInfoDto.Priority.HasValue)
+            project.Priority = updateProjectInfoDto.Priority.Value;
+
+
+    }
+
+    /// <summary>
+    /// Mapping method for projects`employees and status
+    /// </summary>
+    private async Task _ApplyEmployeeChanges(Project project, ChangeEmployeeOnProjectDto changeEmployeeOnProjectDto)
+    {
+        if (changeEmployeeOnProjectDto.Status.HasValue)
+            project.Status = changeEmployeeOnProjectDto.Status.Value;
+        
+        if (changeEmployeeOnProjectDto.ProjectManagerId != project.ProjectManagerId)
+        {
+            project.ProjectManagerId = changeEmployeeOnProjectDto.ProjectManagerId;
+            project.ProjectManager = null;
+        }
+
+        if (changeEmployeeOnProjectDto.EmployeesIds != null)
+        {
+            var employees = await _employeeRepository
+                .GetEmployeesByIdsAsync(changeEmployeeOnProjectDto.EmployeesIds.ToArray());
+
+            project.Employees = employees.ToList();
+        }
+    }
+
+    /// <summary>
     /// Validate status
     /// </summary>
-    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="InvalidOperationException">Inners when invalid status or date</exception>
     private void _ValidateProjectState(Project project)
     {
-        if (project.Status != ProjectStatus.Backlog && project.ProjectManagerId == null)
+        if ((project.Status != ProjectStatus.Backlog && project.ProjectManagerId == null) 
+            && (project.Status != ProjectStatus.Archived && project.ProjectManagerId == null))
         {
             throw new InvalidOperationException(
                 $"Project with status '{project.Status}' must have a project manager assigned.");
-        }
-
-        if ((project.Status == ProjectStatus.Completed || project.Status == ProjectStatus.Archived) 
-            && !project.FinishDate.HasValue)
-        {
-            throw new InvalidOperationException(
-                $"Project with status '{project.Status}' must have a finish date.");
         }
     }
 }

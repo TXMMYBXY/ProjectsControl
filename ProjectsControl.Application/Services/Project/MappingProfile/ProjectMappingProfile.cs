@@ -22,12 +22,6 @@ public class ProjectMappingProfile : Profile
         CreateMap<CreateProjectDto, Entity.Models.Project>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Employees, opt => opt.Ignore());
-        
-        //Profiles for PATCH
-        CreateMap<UpdateProjectInfoDto, Entity.Models.Project>()
-            .ForAllMembers(opts =>
-                opts.Condition((src, dest, srcMember) => srcMember != null));
 
-        CreateMap<Entity.Models.Project, UpdateProjectInfoDto>();
     }
 }

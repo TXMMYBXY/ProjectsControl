@@ -23,7 +23,6 @@ export function EmployeeForm({ initialData, projects, onSubmit, onCancel, mode }
       setLoading(true);
 
       if (mode === 'create') {
-        // При создании projectsIds идут в теле запроса
         await onSubmit({
           firstName: form.firstName,
           lastName: form.lastName,
@@ -33,8 +32,6 @@ export function EmployeeForm({ initialData, projects, onSubmit, onCancel, mode }
           projectsIds: form.projectsIds.length ? form.projectsIds : null,
         });
       } else {
-        // Шаг 1: обновляем основную информацию
-        // UpdateEmployeeViewModel НЕ содержит projectsIds — только личные данные
         await employeesApi.update(initialData.id, {
           firstName: form.firstName || null,
           lastName: form.lastName || null,
@@ -43,7 +40,6 @@ export function EmployeeForm({ initialData, projects, onSubmit, onCancel, mode }
           phoneNumber: form.phoneNumber || null,
         });
 
-        // Шаг 2: обновляем проекты через отдельный эндпоинт /changeProjects
         const prevIds = initialData?.projects?.map(p => p.id) ?? [];
         const newIds = form.projectsIds;
         const changed =
@@ -56,7 +52,7 @@ export function EmployeeForm({ initialData, projects, onSubmit, onCancel, mode }
           });
         }
 
-        await onSubmit(null); // сигнал что всё выполнено внутри
+        await onSubmit(null);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ошибка сохранения');

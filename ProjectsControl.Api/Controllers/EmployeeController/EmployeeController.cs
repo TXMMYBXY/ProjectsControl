@@ -20,6 +20,9 @@ public class EmployeeController : ControllerBase
         _employeeService = employeeService;
     }
     
+    /// <summary>
+    /// Endpoint for getting all employees
+    /// </summary>
     [HttpGet("all")]
     public async Task<ActionResult<List<GetEmployeeViewModel>>> GetAllEmployees()
     {
@@ -29,6 +32,9 @@ public class EmployeeController : ControllerBase
         return Ok(employeesListViewModel);
     }
     
+    /// <summary>
+    /// Endpoint for getting employee
+    /// </summary>
     [HttpGet("{employeeId:int}")]
     public async Task<ActionResult<GetEmployeeViewModel>> GetEmployeeById([FromRoute] int employeeId)
     {
@@ -38,6 +44,9 @@ public class EmployeeController : ControllerBase
         return Ok(employeeViewModel);
     }
     
+    /// <summary>
+    /// Endpoint for creating employee
+    /// </summary>
     [HttpPost]
     public async Task<ActionResult<CreateEmployeeViewModel>> CreateEmployee(
         [FromBody] CreateEmployeeViewModel createEmployeeViewModel)
@@ -49,6 +58,9 @@ public class EmployeeController : ControllerBase
         return Created(nameof(employeeViewModel), employeeViewModel);
     }
     
+    /// <summary>
+    /// Endpoint for updating employee
+    /// </summary>
     [HttpPatch("{employeeId:int}")]
     public async Task<ActionResult> UpdateEmployeeById(int employeeId, 
         [FromBody] UpdateEmployeeViewModel updateEmployeeViewModel)
@@ -59,6 +71,9 @@ public class EmployeeController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Endpoint for deleting employee
+    /// </summary>
     [HttpDelete("{employeeId:int}")]
     public async Task<ActionResult> DeleteEmployeeById(int employeeId)
     {
@@ -66,7 +81,10 @@ public class EmployeeController : ControllerBase
         
         return Ok();
     }
-
+    
+    /// <summary>
+    /// Endpoint for updating employee`s projects
+    /// </summary>
     [HttpPatch("{employeeId:int}/changeProjects")]
     public async Task<ActionResult> ChangeProjects(int employeeId, ChangeProjectEmployeeViewModel changeProjectViewModel)
     {

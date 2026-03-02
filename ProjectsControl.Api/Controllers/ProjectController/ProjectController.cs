@@ -20,6 +20,9 @@ public class ProjectController : ControllerBase
         _projectService = projectService;
     }
 
+    /// <summary>
+    /// Endpoint for getting all projects
+    /// </summary>
     [HttpGet("all")]
     public async Task<ActionResult<List<GetProjectViewModel>>> GetAllProjects()
     {
@@ -29,6 +32,9 @@ public class ProjectController : ControllerBase
         return Ok(projectListViewModel);
     }
     
+    /// <summary>
+    /// Endpoint for getting project
+    /// </summary>
     [HttpGet("{projectId:int}")]
     public async Task<ActionResult<GetProjectViewModel>> GetProjectById(int projectId)
     {
@@ -38,6 +44,9 @@ public class ProjectController : ControllerBase
         return Ok(projectViewModel);
     }
 
+    /// <summary>
+    /// Endpoint for creating project
+    /// </summary>
     [HttpPost]
     public async Task<ActionResult> CreateProject([FromBody] CreateProjectViewModel createProjectViewModel)
     {
@@ -48,6 +57,9 @@ public class ProjectController : ControllerBase
         return Created(nameof(projectViewModel), projectViewModel);
     }
 
+    /// <summary>
+    /// Endpoint for updating project
+    /// </summary>
     [HttpPatch("{projectId:int}")]
     public async Task<ActionResult> UpdateProjectById(int projectId, 
         [FromBody] UpdateProjectViewModel updateProjectViewModel)
@@ -59,6 +71,9 @@ public class ProjectController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Endpoint for deleting project
+    /// </summary>
     [HttpDelete("{projectId:int}")]
     public async Task<ActionResult> DeleteProjectById(int projectId)
     {
@@ -67,13 +82,16 @@ public class ProjectController : ControllerBase
         return Ok();
     }
 
-    [HttpPatch("{projectId:int}/change-employees")]
-    public async Task<ActionResult> ChangeEmployeesOnProject(int projectId,
+    /// <summary>
+    /// Endpoint for updating project`s employees
+    /// </summary>
+    [HttpPatch("{projectId:int}/change-employees-status")]
+    public async Task<ActionResult> ChangeEmployeesAndStatus(int projectId,
         ChangeEmployeesOnProjectViewModel changeEmployeesOnProjectViewModel)
     {
         var changeEmployeesOnDto = _mapper.Map<ChangeEmployeeOnProjectDto>(changeEmployeesOnProjectViewModel);
         
-        await _projectService.ChangeEmployeesOnProjectAsync(projectId, changeEmployeesOnDto);
+        await _projectService.ChangeEmployeesAndStatusAsync(projectId, changeEmployeesOnDto);
         
         return Ok();
     }

@@ -29,5 +29,5 @@ public class CreateEmployeeViewModel
     public string PhoneNumber { get; set; }
     
     [JsonPropertyName("projectsIds")]
-    public List<int> ProjectsIds { get; set; }
+    public List<int>? ProjectsIds { get; set; }
 }

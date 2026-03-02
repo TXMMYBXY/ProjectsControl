@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5202/project-control-api';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 async function request(url, options = {}) {
   const res = await fetch(url, {
@@ -51,14 +51,13 @@ export const projectsApi = {
   delete: (id) =>
     request(`${BASE_URL}/projects/${id}`, { method: 'DELETE' }),
   changeEmployees: (id, data) =>
-    request(`${BASE_URL}/projects/${id}/change-employees`, {
+    request(`${BASE_URL}/projects/${id}/change-employees-status`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
 };
 
 export const documentsApi = {
-  // POST /documents/{projectId}/upload — multipart/form-data с полем "File"
   upload: async (projectId, file) => {
     const formData = new FormData();
     formData.append('File', file);
@@ -74,7 +73,6 @@ export const documentsApi = {
     return text ? JSON.parse(text) : undefined;
   },
 
-  // GET /documents/{documentId}/download — скачать файл
   getDownloadUrl: (documentId) => `${BASE_URL}/documents/${documentId}/download`,
 
   download: async (documentId, fileName) => {

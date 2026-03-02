@@ -14,11 +14,6 @@ public class ProjectRepository : BaseRepository<Project>, IProjectRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IReadOnlyList<Project>?> GetProjectsByManagerEmployeeIdAsync(int employeeId)
-    {
-        return await _dbContext.Projects.Where(p => p.ProjectManagerId.Equals(employeeId)).ToListAsync();
-    }
-
     public async Task<IReadOnlyList<Project>?> GetProjectsByIdAsync(params int[] projectIds)
     {
         return await _dbContext.Projects.Where(p => projectIds.Contains(p.Id)).ToListAsync();
