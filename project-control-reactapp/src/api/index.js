@@ -56,3 +56,41 @@ export const projectsApi = {
       body: JSON.stringify(data),
     }),
 };
+
+export const documentsApi = {
+  // POST /documents/{projectId}/upload — multipart/form-data с полем "File"
+  upload: async (projectId, file) => {
+    const formData = new FormData();
+    formData.append('File', file);
+    const res = await fetch(`${BASE_URL}/documents/${projectId}/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => res.statusText);
+      throw new Error(`${res.status}: ${text}`);
+    }
+    const text = await res.text();
+    return text ? JSON.parse(text) : undefined;
+  },
+
+  // GET /documents/{documentId}/download — скачать файл
+  getDownloadUrl: (documentId) => `${BASE_URL}/documents/${documentId}/download`,
+
+  download: async (documentId, fileName) => {
+    const res = await fetch(`${BASE_URL}/documents/${documentId}/download`);
+    if (!res.ok) {
+      const text = await res.text().catch(() => res.statusText);
+      throw new Error(`${res.status}: ${text}`);
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName ?? `document_${documentId}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  },
+};

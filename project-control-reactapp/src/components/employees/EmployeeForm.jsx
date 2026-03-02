@@ -23,9 +23,10 @@ export function EmployeeForm({ initialData, projects, onSubmit, onCancel, mode }
       setLoading(true);
 
       if (mode === 'create') {
+        // При создании projectsIds идут в теле запроса
         await onSubmit({
-          firstName: form.firstName || undefined,
-          lastName: form.lastName || undefined,
+          firstName: form.firstName,
+          lastName: form.lastName,
           patronymic: form.patronymic || null,
           email: form.email || null,
           phoneNumber: form.phoneNumber || null,
@@ -33,6 +34,7 @@ export function EmployeeForm({ initialData, projects, onSubmit, onCancel, mode }
         });
       } else {
         // Шаг 1: обновляем основную информацию
+        // UpdateEmployeeViewModel НЕ содержит projectsIds — только личные данные
         await employeesApi.update(initialData.id, {
           firstName: form.firstName || null,
           lastName: form.lastName || null,
@@ -41,7 +43,7 @@ export function EmployeeForm({ initialData, projects, onSubmit, onCancel, mode }
           phoneNumber: form.phoneNumber || null,
         });
 
-        // Шаг 2: обновляем проекты через отдельный эндпоинт
+        // Шаг 2: обновляем проекты через отдельный эндпоинт /changeProjects
         const prevIds = initialData?.projects?.map(p => p.id) ?? [];
         const newIds = form.projectsIds;
         const changed =
@@ -131,7 +133,7 @@ export function EmployeeForm({ initialData, projects, onSubmit, onCancel, mode }
         <label className={labelClass}>
           Проекты
           {mode === 'edit' && (
-            <span className="ml-2 text-indigo-500 font-normal">(сохраняются отдельно)</span>
+            <span className="ml-2 text-indigo-500 font-normal">(обновляются отдельным запросом)</span>
           )}
         </label>
         <SearchableMultiSelect
@@ -143,7 +145,9 @@ export function EmployeeForm({ initialData, projects, onSubmit, onCancel, mode }
           getLabel={p => p.title ?? `Проект #${p.id}`}
         />
         {form.projectsIds.length > 0 && (
-          <p className="text-xs text-gray-400 mt-1">Выбрано: {form.projectsIds.length}</p>
+          <p className="text-xs text-gray-400 mt-1">
+            Выбрано: {form.projectsIds.length} проект{form.projectsIds.length === 1 ? '' : form.projectsIds.length < 5 ? 'а' : 'ов'}
+          </p>
         )}
       </div>
 
