@@ -23,5 +23,17 @@ public class ProjectMappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Employees, opt => opt.Ignore());
 
+        
+        //Profiles for PATCH
+        CreateMap<UpdateProjectInfoDto, Entity.Models.Project>()
+            .AfterMap((src, dest) =>
+            {
+                dest.Title = src.Title ?? dest.Title;
+                dest.CustomerCompany = src.CustomerCompany ?? dest.CustomerCompany;
+                dest.PerformingCompany = src.PerformingCompany ?? dest.PerformingCompany;
+                dest.StartDate = src.StartDate ?? dest.StartDate;
+                dest.FinishDate = src.FinishDate ?? dest.FinishDate;
+                dest.Priority = src.Priority ?? dest.Priority;
+            });
     }
 }

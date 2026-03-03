@@ -64,7 +64,7 @@ public class EmployeeService : IEmployeeService
 
         GeneralService.CheckForNull(employee, "Employee not found");
 
-        _ApplyEmployeeChanges(employee, updateEmployeeDto);
+        _mapper.Map(updateEmployeeDto, employee);
 
         await _employeeRepository.SaveChangesAsync();
     }
@@ -72,6 +72,8 @@ public class EmployeeService : IEmployeeService
     public async Task DeleteEmployeeAsync(int employeeId)
     {
         var employee = await _employeeRepository.GetByIdAsync(employeeId);
+        
+        GeneralService.CheckForNull(employee, "Employee not found");
 
         if (employee != null) _employeeRepository.Delete(employee);
 
@@ -90,8 +92,7 @@ public class EmployeeService : IEmployeeService
 
     public async Task ChangeProjectEmployeeAsync(int employeeId, ChangeProjectEmployeeDto changeProjectEmployeeDto)
     {
-        var employee = await _employeeRepository
-            .GetEmployeeByIdAsync(employeeId);
+        var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId);
 
         GeneralService.CheckForNull(employee, "Employee not found");
         GeneralService.CheckForNull(changeProjectEmployeeDto.ProjectsIds, "Empty argument");
@@ -102,23 +103,5 @@ public class EmployeeService : IEmployeeService
         employee.Projects = projects.ToList();
 
         await _employeeRepository.SaveChangesAsync();
-    }
-    
-    private void _ApplyEmployeeChanges(Employee employee, UpdateEmployeeDto updateEmployeeDto)
-    {
-        if (updateEmployeeDto.FirstName != null)
-            employee.FirstName = updateEmployeeDto.FirstName;
-
-        if (updateEmployeeDto.LastName != null)
-            employee.LastName = updateEmployeeDto.LastName;
-
-        if (updateEmployeeDto.Patronymic != null)
-            employee.Patronymic = updateEmployeeDto.Patronymic;
-
-        if (updateEmployeeDto.Email != null)
-            employee.Email = updateEmployeeDto.Email;
-
-        if (updateEmployeeDto.PhoneNumber != null)
-            employee.PhoneNumber = updateEmployeeDto.PhoneNumber;
     }
 }

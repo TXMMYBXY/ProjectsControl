@@ -1,14 +1,13 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ProjectsControl.Api.Controllers.ProjectController.ViewModels;
-using ProjectsControl.Application.Services.Employee.Dtos;
 using ProjectsControl.Application.Services.Project;
 using ProjectsControl.Application.Services.Project.Dtos;
 
 namespace ProjectsControl.Api.Controllers.ProjectController;
 
 [ApiController]
-[Route("project-control-api/projects")]
+[Route("api/project")]
 public class ProjectController : ControllerBase
 {
     private readonly IMapper _mapper;
@@ -23,7 +22,7 @@ public class ProjectController : ControllerBase
     /// <summary>
     /// Endpoint for getting all projects
     /// </summary>
-    [HttpGet("all")]
+    [HttpGet]
     public async Task<ActionResult<List<GetProjectViewModel>>> GetAllProjects()
     {
         var projectListDto = await _projectService.GetAllProjectsAsync();
@@ -36,7 +35,7 @@ public class ProjectController : ControllerBase
     /// Endpoint for getting project
     /// </summary>
     [HttpGet("{projectId:int}")]
-    public async Task<ActionResult<GetProjectViewModel>> GetProjectById(int projectId)
+    public async Task<ActionResult<GetProjectViewModel>> GetProject([FromRoute] int projectId)
     {
         var projectDto = await _projectService.GetProjectByIdAsync(projectId);
         var projectViewModel = _mapper.Map<GetProjectViewModel>(projectDto);
@@ -60,8 +59,8 @@ public class ProjectController : ControllerBase
     /// <summary>
     /// Endpoint for updating project
     /// </summary>
-    [HttpPatch("{projectId:int}")]
-    public async Task<ActionResult> UpdateProjectById(int projectId, 
+    [HttpPatch("{projectId:int}/info")]
+    public async Task<ActionResult> UpdateProjectInfo([FromRoute] int projectId, 
         [FromBody] UpdateProjectViewModel updateProjectViewModel)
     {
         var updateProjectDto = _mapper.Map<UpdateProjectInfoDto>(updateProjectViewModel);
@@ -75,7 +74,7 @@ public class ProjectController : ControllerBase
     /// Endpoint for deleting project
     /// </summary>
     [HttpDelete("{projectId:int}")]
-    public async Task<ActionResult> DeleteProjectById(int projectId)
+    public async Task<ActionResult> DeleteProject([FromRoute] int projectId)
     {
         await  _projectService.DeleteProjectAsync(projectId);
         
@@ -85,9 +84,9 @@ public class ProjectController : ControllerBase
     /// <summary>
     /// Endpoint for updating project`s employees
     /// </summary>
-    [HttpPatch("{projectId:int}/change-employees-status")]
-    public async Task<ActionResult> ChangeEmployeesAndStatus(int projectId,
-        ChangeEmployeesOnProjectViewModel changeEmployeesOnProjectViewModel)
+    [HttpPatch("{projectId:int}/status-and-employees")]
+    public async Task<ActionResult> UpdateEmployeesAndStatus([FromRoute] int projectId,
+        [FromBody] ChangeEmployeesOnProjectViewModel changeEmployeesOnProjectViewModel)
     {
         var changeEmployeesOnDto = _mapper.Map<ChangeEmployeeOnProjectDto>(changeEmployeesOnProjectViewModel);
         

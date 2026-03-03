@@ -10,6 +10,7 @@
     <ItemGroup>
       <ProjectReference Include="..\ProjectsControl.Application\ProjectsControl.Application.csproj" />
       <ProjectReference Include="..\ProjectsControl.Entities\ProjectsControl.Entities.csproj" />
+      <ProjectReference Include="..\ProjectsControl.Utils\ProjectsControl.Utils.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,36 +1,36 @@
-# 📊 ProjectsControl
-Сервис для управления проектами и сотрудниками с поддержкой ролей, статусов, документов и контейнеризацией через Docker.
+# ProjectsControl
+Сервис для управления проектами и сотрудниками с поддержкой статусов, документов и контейнеризацией через Docker.
 
-## 📄 Содержание
-- [📊 ProjectsControl](#-projectscontrol)
-  - [📄 Содержание](#-содержание)
-  - [🚀 Стек технологий](#-стек-технологий)
+## Содержание
+- [ProjectsControl](#projectscontrol)
+  - [Содержание](#содержание)
+  - [Стек технологий](#стек-технологий)
     - [Backend](#backend)
     - [Frontend](#frontend)
-  - [🏗 Архитектура проекта](#-архитектура-проекта)
-  - [🧱 Архитектурный подход](#-архитектурный-подход)
-  - [🐳 Docker архитектура](#-docker-архитектура)
-  - [⚙️ Запуск проекта](#️-запуск-проекта)
-  - [🧩 Основные возможности](#-основные-возможности)
-  - [📌 Бизнес-правила](#-бизнес-правила)
-  - [📄 API Документация](#-api-документация)
-  - [👨‍💻 Автор](#-автор)
+  - [Архитектура проекта](#архитектура-проекта)
+  - [Архитектурный подход](#архитектурный-подход)
+  - [Docker архитектура](#docker-архитектура)
+  - [Установка и запуск](#установка-и-запуск)
+  - [Основные возможности](#основные-возможности)
+  - [Бизнес-правила](#бизнес-правила)
+  - [API Документация](#api-документация)
+  - [Автор](#автор)
 
 
-## 🚀 Стек технологий
+## Стек технологий
 ### Backend
 - ASP.NET Core 9
 - Entity Framework Core
 - MS SQL Server 2022
 - AutoMapper
-- Swagger / Scalar
+- Scalar
 - Docker
 ### Frontend
 - React (Vite)
 - TailwindCSS
 - Nginx (production proxy)
 
-## 🏗 Архитектура проекта
+## Архитектура проекта
 
 ```
 ProjectsControl
@@ -39,13 +39,14 @@ ProjectsControl
 ├── ProjectsControl.Application      → Бизнес-логика, DTO, сервисы
 ├── ProjectsControl.Entities         → Модели и DbContext
 ├── ProjectsControl.Infrastructure   → Репозитории, реализация зависимостей
+├── ProjectsControl.Utils            → Вспомогательные классы и методы
 ├── project-control-reactapp         → React клиент
 ├── docker-compose.yml               → Оркестрация контейнеров
 └── .env.example                     → Пример конфигурации
 ```
 
-## 🧱 Архитектурный подход
-- Разделение слоёв (API / Application / Infrastructure / Entities)
+## Архитектурный подход
+- Разделение слоёв (API / Application / Infrastructure / Entities / Utils / reactapp)
 - Repository Pattern
 - Service Layer
 - DTO separation
@@ -53,7 +54,7 @@ ProjectsControl
 - Production-ready Docker setup
 - Один входной порт через Nginx
 
-## 🐳 Docker архитектура
+## Docker архитектура
 ```
 Browser
    ↓
@@ -63,32 +64,45 @@ ASP.NET API
    ↓
 SQL Server
 ```
-## ⚙️ Запуск проекта
+## Установка и запуск
+Клонировать репозиторий:
+```bash
+git clone https://github.com/TXMMYBXY/ProjectsControl.git
+```
+
 Созать файл конфигурации из примера:
 ```bash
 cp .env.example .env
 ```
-Настроить файл конфигурации
+Настроить файл конфигурации `.env` и запустить контейнеры
 
-Запустить контейнеры
 ```bash
 docker compose up --build
 ```
-## 🧩 Основные возможности
+Удалить контейнеры
+```bash
+docker-compose down
+```
+Чтобы удалить контейнеры и том где хранятся данные
+```bash
+docker-compose down -v
+```
+
+## Основные возможности
 - CRUD проектов
 - CRUD сотрудников
 - Назначение руководителя проекта
 - Управление составом команды
-- Статусы проекта (Backlog / InProgress / Completed / Archived)
+- Статусы проекта (`Backlog` / `Планирование` / `Активный` / `Приостановлен` / `Завершен` / `Архив`)
 - Валидация бизнес-правил
 - Загрузка и скачивание документов
 - Автоматические миграции при старте
   
-## 📌 Бизнес-правила
+## Бизнес-правила
 - Проект вне Backlog должен иметь руководителя
 - При удалении сотрудника управляемые проекты архивируются
 
-## 📄 API Документация
+## API Документация
 <details>
 <summary>Документация</summary>
 
@@ -100,7 +114,7 @@ docker compose up --build
     "version": "v1"
   },
   "paths": {
-    "/project-control-api/documents/{projectId}/upload": {
+    "/api/document/{projectId}/upload": {
       "post": {
         "tags": [
           "Document"
@@ -146,7 +160,7 @@ docker compose up --build
         }
       }
     },
-    "/project-control-api/documents/{documentId}/download": {
+    "/api/document/{documentId}/download": {
       "get": {
         "tags": [
           "Document"
@@ -169,7 +183,7 @@ docker compose up --build
         }
       }
     },
-    "/project-control-api/employees/all": {
+    "/api/employee": {
       "get": {
         "tags": [
           "Employee"
@@ -205,110 +219,7 @@ docker compose up --build
             }
           }
         }
-      }
-    },
-    "/project-control-api/employees/{employeeId}": {
-      "get": {
-        "tags": [
-          "Employee"
-        ],
-        "parameters": [
-          {
-            "name": "employeeId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetEmployeeViewModel"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetEmployeeViewModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetEmployeeViewModel"
-                }
-              }
-            }
-          }
-        }
       },
-      "patch": {
-        "tags": [
-          "Employee"
-        ],
-        "parameters": [
-          {
-            "name": "employeeId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateEmployeeViewModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateEmployeeViewModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateEmployeeViewModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Employee"
-        ],
-        "parameters": [
-          {
-            "name": "employeeId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/project-control-api/employees": {
       "post": {
         "tags": [
           "Employee"
@@ -356,7 +267,110 @@ docker compose up --build
         }
       }
     },
-    "/project-control-api/employees/{employeeId}/changeProjects": {
+    "/api/employee/{employeeId}": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "parameters": [
+          {
+            "name": "employeeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEmployeeViewModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEmployeeViewModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEmployeeViewModel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Employee"
+        ],
+        "parameters": [
+          {
+            "name": "employeeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/employee/{employeeId}/info": {
+      "patch": {
+        "tags": [
+          "Employee"
+        ],
+        "parameters": [
+          {
+            "name": "employeeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmployeeViewModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmployeeViewModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmployeeViewModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/employee/{employeeId}/projects": {
       "patch": {
         "tags": [
           "Employee"
@@ -398,7 +412,7 @@ docker compose up --build
         }
       }
     },
-    "/project-control-api/projects/all": {
+    "/api/project": {
       "get": {
         "tags": [
           "Project"
@@ -434,9 +448,38 @@ docker compose up --build
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Project"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectViewModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectViewModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectViewModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
-    "/project-control-api/projects/{projectId}": {
+    "/api/project/{projectId}": {
       "get": {
         "tags": [
           "Project"
@@ -475,6 +518,29 @@ docker compose up --build
           }
         }
       },
+      "delete": {
+        "tags": [
+          "Project"
+        ],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/project/{projectId}/info": {
       "patch": {
         "tags": [
           "Project"
@@ -514,61 +580,9 @@ docker compose up --build
             "description": "OK"
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "Project"
-        ],
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
       }
     },
-    "/project-control-api/projects": {
-      "post": {
-        "tags": [
-          "Project"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateProjectViewModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateProjectViewModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateProjectViewModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/project-control-api/projects/{projectId}/change-employees-status": {
+    "/api/project/{projectId}/status-and-employees": {
       "patch": {
         "tags": [
           "Project"
@@ -981,5 +995,5 @@ docker compose up --build
 </details>
 
 
-## 👨‍💻 Автор
+## Автор
 [Михаил](https://github.com/TXMMYBXY)

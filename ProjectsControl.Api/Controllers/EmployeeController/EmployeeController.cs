@@ -3,12 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using ProjectsControl.Api.Controllers.EmployeeController.VIewModels;
 using ProjectsControl.Application.Services.Employee;
 using ProjectsControl.Application.Services.Employee.Dtos;
-using ProjectsControl.Application.Services.Project.Dtos;
 
 namespace ProjectsControl.Api.Controllers.EmployeeController;
 
 [ApiController]
-[Route("project-control-api/employees")]
+[Route("api/employee")]
 public class EmployeeController : ControllerBase
 {
     private readonly IMapper _mapper;
@@ -23,7 +22,7 @@ public class EmployeeController : ControllerBase
     /// <summary>
     /// Endpoint for getting all employees
     /// </summary>
-    [HttpGet("all")]
+    [HttpGet]
     public async Task<ActionResult<List<GetEmployeeViewModel>>> GetAllEmployees()
     {
         var employeesListDto = await _employeeService.GetAllEmployeesAsync();
@@ -36,7 +35,7 @@ public class EmployeeController : ControllerBase
     /// Endpoint for getting employee
     /// </summary>
     [HttpGet("{employeeId:int}")]
-    public async Task<ActionResult<GetEmployeeViewModel>> GetEmployeeById([FromRoute] int employeeId)
+    public async Task<ActionResult<GetEmployeeViewModel>> GetEmployee([FromRoute] int employeeId)
     {
         var employeeDto = await _employeeService.GetEmployeeAsync(employeeId);
         var employeeViewModel = _mapper.Map<GetEmployeeViewModel>(employeeDto);
@@ -61,11 +60,12 @@ public class EmployeeController : ControllerBase
     /// <summary>
     /// Endpoint for updating employee
     /// </summary>
-    [HttpPatch("{employeeId:int}")]
-    public async Task<ActionResult> UpdateEmployeeById(int employeeId, 
+    [HttpPatch("{employeeId:int}/info")]
+    public async Task<ActionResult> UpdateEmployeeInfo([FromRoute] int employeeId, 
         [FromBody] UpdateEmployeeViewModel updateEmployeeViewModel)
     {
         var  updateEmployeeDto = _mapper.Map<UpdateEmployeeDto>(updateEmployeeViewModel);
+        
         await _employeeService.UpdateEmployeeAsync(employeeId, updateEmployeeDto);
 
         return Ok();
@@ -75,7 +75,7 @@ public class EmployeeController : ControllerBase
     /// Endpoint for deleting employee
     /// </summary>
     [HttpDelete("{employeeId:int}")]
-    public async Task<ActionResult> DeleteEmployeeById(int employeeId)
+    public async Task<ActionResult> DeleteEmployee([FromRoute] int employeeId)
     {
         await  _employeeService.DeleteEmployeeAsync(employeeId);
         
@@ -85,8 +85,9 @@ public class EmployeeController : ControllerBase
     /// <summary>
     /// Endpoint for updating employee`s projects
     /// </summary>
-    [HttpPatch("{employeeId:int}/changeProjects")]
-    public async Task<ActionResult> ChangeProjects(int employeeId, ChangeProjectEmployeeViewModel changeProjectViewModel)
+    [HttpPatch("{employeeId:int}/projects")]
+    public async Task<ActionResult> UpdateEmployeeProjects([FromRoute] int employeeId, 
+        ChangeProjectEmployeeViewModel changeProjectViewModel)
     {
         var changeProjectEmployeeDto = _mapper.Map<ChangeProjectEmployeeDto>(changeProjectViewModel);
         
