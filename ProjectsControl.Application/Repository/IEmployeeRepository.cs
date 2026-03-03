@@ -21,4 +21,9 @@ public interface IEmployeeRepository : IBaseRepository<Employee>
     /// Get employee by Id
     /// </summary>
     Task<Employee> GetEmployeeByIdAsync(int employeeId);
+    
+    /// <summary>
+    /// Get employee by Email
+    /// </summary>
+    Task<Employee> GetEmployeeByLoginAsync(string email);
 }
