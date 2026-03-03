@@ -6,3 +6,4 @@ riderModule.iml
 ProjectsControl.sln.DotSettings.user
 /project-control-reactapp/node_modules
 .env
+.idea
