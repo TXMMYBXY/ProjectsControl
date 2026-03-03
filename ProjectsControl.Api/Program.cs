@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ProjectsControl.Api.Configuration;
 using ProjectsControl.Api.Middleware;
+using ProjectsControl.Application.Services.Auth.Config;
 using ProjectsControl.Entity.Data;
 using ProjectsControl.Infrastructure;
 using Scalar.AspNetCore;
@@ -22,6 +23,7 @@ builder.Services.AddInfrastructure();
 builder.Services.AddControllers();
         
 builder.Services.Configure<DataBaseConnectionSettings>(builder.Configuration.GetSection("DataBaseConnectionSettings"));
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
 var dataBaseConnectionSettings = builder.Configuration.GetSection("DataBaseConnectionSettings").Get<DataBaseConnectionSettings>();
         
@@ -55,6 +57,8 @@ app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 app.UseErrorHandling();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapSwagger("/openapi/{documentName}.json");
 app.MapScalarApiReference();

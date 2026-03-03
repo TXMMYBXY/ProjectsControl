@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\DocumentController\" />
+      <Folder Include="Controllers\Document\" />
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
