@@ -7,7 +7,7 @@ using ProjectsControl.Application.Services.Document.Dtos;
 namespace ProjectsControl.Api.Controllers.DocumentController;
 
 [ApiController]
-[Route("project-control-api/documents")]
+[Route("api/document")]
 public class DocumentController : ControllerBase
 {
     private readonly IMapper _mapper;
@@ -19,13 +19,13 @@ public class DocumentController : ControllerBase
         _documentService = documentService;
     }
     
-    
     /// <summary>
     /// Endpoint for uploading document to server
     /// </summary>
     [HttpPost("{projectId:int}/upload")]
     [Consumes("multipart/form-data")]
-    public async Task<ActionResult> AddDocumentToProject([FromRoute] int projectId, [FromForm]UploadDocumentViewModel uploadDocumentViewModel)
+    public async Task<ActionResult> AddDocumentToProject([FromRoute] int projectId, 
+        [FromForm]UploadDocumentViewModel uploadDocumentViewModel)
     {
         var uploadDocumentDto = _mapper.Map<UploadDocumentDto>(uploadDocumentViewModel);
         

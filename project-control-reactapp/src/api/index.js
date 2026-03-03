@@ -14,44 +14,44 @@ async function request(url, options = {}) {
 }
 
 export const employeesApi = {
-  getAll: () => request(`${BASE_URL}/employees/all`),
-  getById: (id) => request(`${BASE_URL}/employees/${id}`),
+  getAll: () => request(`${BASE_URL}/employee`),
+  getById: (id) => request(`${BASE_URL}/employee/${id}`),
   create: (data) =>
-    request(`${BASE_URL}/employees`, {
+    request(`${BASE_URL}/employee`, {
       method: 'POST',
       body: JSON.stringify(data),
     }),
   update: (id, data) =>
-    request(`${BASE_URL}/employees/${id}`, {
+    request(`${BASE_URL}/employee/${id}/info`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
   delete: (id) =>
-    request(`${BASE_URL}/employees/${id}`, { method: 'DELETE' }),
+    request(`${BASE_URL}/employee/${id}`, { method: 'DELETE' }),
   changeProjects: (id, data) =>
-    request(`${BASE_URL}/employees/${id}/changeProjects`, {
+    request(`${BASE_URL}/employee/${id}/projects`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
 };
 
 export const projectsApi = {
-  getAll: () => request(`${BASE_URL}/projects/all`),
-  getById: (id) => request(`${BASE_URL}/projects/${id}`),
+  getAll: () => request(`${BASE_URL}/project`),
+  getById: (id) => request(`${BASE_URL}/project/${id}`),
   create: (data) =>
-    request(`${BASE_URL}/projects`, {
+    request(`${BASE_URL}/project`, {
       method: 'POST',
       body: JSON.stringify(data),
     }),
   update: (id, data) =>
-    request(`${BASE_URL}/projects/${id}`, {
+    request(`${BASE_URL}/project/${id}/info`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
   delete: (id) =>
-    request(`${BASE_URL}/projects/${id}`, { method: 'DELETE' }),
+    request(`${BASE_URL}/project/${id}`, { method: 'DELETE' }),
   changeEmployees: (id, data) =>
-    request(`${BASE_URL}/projects/${id}/change-employees-status`, {
+    request(`${BASE_URL}/project/${id}/status-and-employees`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
@@ -61,7 +61,7 @@ export const documentsApi = {
   upload: async (projectId, file) => {
     const formData = new FormData();
     formData.append('File', file);
-    const res = await fetch(`${BASE_URL}/documents/${projectId}/upload`, {
+    const res = await fetch(`${BASE_URL}/document/${projectId}/upload`, {
       method: 'POST',
       body: formData,
     });
@@ -73,10 +73,10 @@ export const documentsApi = {
     return text ? JSON.parse(text) : undefined;
   },
 
-  getDownloadUrl: (documentId) => `${BASE_URL}/documents/${documentId}/download`,
+  getDownloadUrl: (documentId) => `${BASE_URL}/document/${documentId}/download`,
 
   download: async (documentId, fileName) => {
-    const res = await fetch(`${BASE_URL}/documents/${documentId}/download`);
+    const res = await fetch(`${BASE_URL}/document/${documentId}/download`);
     if (!res.ok) {
       const text = await res.text().catch(() => res.statusText);
       throw new Error(`${res.status}: ${text}`);

@@ -20,5 +20,16 @@ public class EmployeeMappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Projects, opt => opt.Ignore())
             .ForMember(dest => dest.ManagedProjects, opt => opt.Ignore());
+        
+        //Profiles for PATCH
+        CreateMap<UpdateEmployeeDto, Entity.Models.Employee>()
+            .AfterMap((src, dest) =>
+            {
+                dest.FirstName = src.FirstName ?? dest.FirstName;
+                dest.LastName = src.LastName ?? dest.LastName;
+                dest.Patronymic = src.Patronymic ?? dest.Patronymic;
+                dest.Email = src.Email ?? dest.Email;
+                dest.PhoneNumber = src.PhoneNumber ?? dest.PhoneNumber;
+            });
     }
 }

@@ -11,7 +11,7 @@ using ProjectsControl.Infrastructure.Services;
 
 namespace ProjectsControl.Infrastructure;
 
-public static class ServiceRegistration
+public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {

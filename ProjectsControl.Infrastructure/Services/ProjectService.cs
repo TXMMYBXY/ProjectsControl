@@ -63,7 +63,7 @@ public class ProjectService : IProjectService
         
         GeneralService.CheckForNull(project, "Project not found");
 
-        _ApplyProjectInfoChanges(project, updateProjectInfoDto);
+        _mapper.Map(updateProjectInfoDto, project);
         
         await _projectRepository.SaveChangesAsync();
     }
@@ -91,40 +91,13 @@ public class ProjectService : IProjectService
 
         await _projectRepository.SaveChangesAsync();
     }
-
-    /// <summary>
-    /// Mapping method for projectInfo
-    /// </summary>
-    private void _ApplyProjectInfoChanges(Project project, UpdateProjectInfoDto updateProjectInfoDto)
-    {
-        if (updateProjectInfoDto.Title != null)
-            project.Title = updateProjectInfoDto.Title;
-
-        if (updateProjectInfoDto.CustomerCompany != null)
-            project.CustomerCompany = updateProjectInfoDto.CustomerCompany;
-
-        if (updateProjectInfoDto.PerformingCompany != null)
-            project.PerformingCompany = updateProjectInfoDto.PerformingCompany;
-
-        if (updateProjectInfoDto.StartDate.HasValue)
-            project.StartDate = updateProjectInfoDto.StartDate.Value;
-
-        if (updateProjectInfoDto.FinishDate != null || updateProjectInfoDto.FinishDate == null)
-            project.FinishDate = updateProjectInfoDto.FinishDate;
-
-        if (updateProjectInfoDto.Priority.HasValue)
-            project.Priority = updateProjectInfoDto.Priority.Value;
-
-
-    }
-
+    
     /// <summary>
     /// Mapping method for projects`employees and status
     /// </summary>
     private async Task _ApplyEmployeeChanges(Project project, ChangeEmployeeOnProjectDto changeEmployeeOnProjectDto)
     {
-        if (changeEmployeeOnProjectDto.Status.HasValue)
-            project.Status = changeEmployeeOnProjectDto.Status.Value;
+        project.Status = changeEmployeeOnProjectDto.Status ?? project.Status;
         
         if (changeEmployeeOnProjectDto.ProjectManagerId != project.ProjectManagerId)
         {
@@ -134,21 +107,20 @@ public class ProjectService : IProjectService
 
         if (changeEmployeeOnProjectDto.EmployeesIds != null)
         {
-            var employees = await _employeeRepository
-                .GetEmployeesByIdsAsync(changeEmployeeOnProjectDto.EmployeesIds.ToArray());
+            var employees = await _employeeRepository.GetEmployeesByIdsAsync(changeEmployeeOnProjectDto.EmployeesIds.ToArray());
 
             project.Employees = employees.ToList();
         }
     }
-
+    
     /// <summary>
     /// Validate status
     /// </summary>
     /// <exception cref="InvalidOperationException">Inners when invalid status or date</exception>
     private void _ValidateProjectState(Project project)
     {
-        if ((project.Status != ProjectStatus.Backlog && project.ProjectManagerId == null) 
-            && (project.Status != ProjectStatus.Archived && project.ProjectManagerId == null))
+        if ((project.Status != ProjectStatus.Backlog && project.Status != ProjectStatus.Archived) 
+            && project.ProjectManagerId == null)
         {
             throw new InvalidOperationException(
                 $"Project with status '{project.Status}' must have a project manager assigned.");
