@@ -24,5 +24,7 @@ public class Employee : EntityBase
 
     public virtual List<Project> Projects { get; set; } = new List<Project>();
     public virtual List<Project> ManagedProjects { get; set; } = new List<Project>();
+    public virtual List<ProjectTask> Tasks { get; set; } = new List<ProjectTask>();
+    
 
 }

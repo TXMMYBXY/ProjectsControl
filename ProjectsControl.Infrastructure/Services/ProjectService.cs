@@ -22,9 +22,9 @@ public class ProjectService : IProjectService
         _employeeRepository = employeeRepository;
     }
 
-    public async Task<List<GetProjectDto>> GetAllProjectsAsync()
+    public async Task<List<GetProjectDto>> GetAllProjectsAsync(ProjectFilter projectFilter)
     {
-        var projectsList = await _projectRepository.GetAllProjectsAsync();
+        var projectsList = await _projectRepository.GetAllProjectsAsync(projectFilter);
         var projectListDto = _mapper.Map<List<GetProjectDto>>(projectsList);
         
         return projectListDto;
@@ -91,7 +91,7 @@ public class ProjectService : IProjectService
 
         await _projectRepository.SaveChangesAsync();
     }
-    
+
     /// <summary>
     /// Mapping method for projects`employees and status
     /// </summary>
@@ -108,7 +108,7 @@ public class ProjectService : IProjectService
         if (changeEmployeeOnProjectDto.EmployeesIds != null)
         {
             var employees = await _employeeRepository.GetEmployeesByIdsAsync(changeEmployeeOnProjectDto.EmployeesIds.ToArray());
-
+            
             project.Employees = employees.ToList();
         }
     }

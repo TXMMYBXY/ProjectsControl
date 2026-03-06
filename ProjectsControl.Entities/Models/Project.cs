@@ -21,9 +21,6 @@ public class Project : EntityBase
     [MaxLength(63)]
     public string PerformingCompany { get; set; }
     
-    public virtual List<Employee>?  Employees { get; set; }
-    public virtual List<Document>? Documents { get; set; }
-    
     [Column(nameof(ProjectManagerId))]
     [ForeignKey(nameof(ProjectManager))]
     public int? ProjectManagerId { get; set; }
@@ -42,4 +39,8 @@ public class Project : EntityBase
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public ProjectStatus Status { get; set; } = ProjectStatus.Backlog;
+    
+    public virtual List<Employee>?  Employees { get; set; }
+    public virtual List<Document>? Documents { get; set; }
+    public List<ProjectTask>? Tasks { get; set; }
 }

@@ -23,9 +23,9 @@ public class ProjectController : ControllerBase
     /// Endpoint for getting all projects
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult<List<GetProjectViewModel>>> GetAllProjects()
+    public async Task<ActionResult<List<GetProjectViewModel>>> GetAllProjects([FromQuery] ProjectFilter projectFilter)
     {
-        var projectListDto = await _projectService.GetAllProjectsAsync();
+        var projectListDto = await _projectService.GetAllProjectsAsync(projectFilter);
         var projectListViewModel = _mapper.Map<List<GetProjectViewModel>>(projectListDto);
         
         return Ok(projectListViewModel);
@@ -94,4 +94,5 @@ public class ProjectController : ControllerBase
         
         return Ok();
     }
+
 } 

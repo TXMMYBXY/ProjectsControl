@@ -1,11 +1,10 @@
-using ProjectsControl.Application.Services.Employee.Dtos;
 using ProjectsControl.Application.Services.Project.Dtos;
 
 namespace ProjectsControl.Application.Services.Project;
 
 public interface IProjectService
 {
-    Task<List<GetProjectDto>> GetAllProjectsAsync();
+    Task<List<GetProjectDto>> GetAllProjectsAsync(ProjectFilter projectFilter);
     Task<GetProjectDto> GetProjectByIdAsync(int projectId);
     Task<CreateProjectDto> CreateProjectAsync(CreateProjectDto createProjectDto);
     
