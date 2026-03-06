@@ -1,3 +1,4 @@
+using ProjectsControl.Application.Services.Project;
 using ProjectsControl.Entity.Models;
 
 namespace ProjectsControl.Application.Repository;
@@ -15,7 +16,7 @@ public interface IProjectRepository : IBaseRepository<Project>
     /// Get all projects
     /// </summary>
     /// <returns>IReadOnlyList</returns>
-    Task<IReadOnlyList<Project>?> GetAllProjectsAsync();
+    Task<List<Project>?> GetAllProjectsAsync(ProjectFilter projectFilter);
     
     /// <summary>
     /// Get project by Id
